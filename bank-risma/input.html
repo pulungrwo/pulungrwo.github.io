@@ -1,0 +1,537 @@
+<!DOCTYPE html>  
+<html lang="id">  
+
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="stylesheet" href="/css/style.css">  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"  
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">  
+    <!-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.1.1/css/all.css"  
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" /> -->  
+
+<script src="https://kit.fontawesome.com/73db2f45cc.js" crossorigin="anonymous"></script>  
+
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>  
+  <script src="https://tanjungbulan.my.id/bank-risma/daftarnama.js"></script>  
+
+   <style>  
+
+       body { font-family: sans-serif; margin: 20px; }  
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }  
+    th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }  
+    th { background-color: #eee; }  
+    h2 { margin-top: 40px; }  
+
+       .profil {  
+  width: 150px;  
+  height: 150px;  
+  border-radius: 50%;  
+  overflow: hidden;  
+  background-color: #333;  
+  /* commented for demo  
+  float: left;  
+  margin-left: 125px;  
+  margin-top: 20px;  
+  */  
+
+  /*for demo*/  
+  display:inline-block;  
+  vertical-align:middle;  
+}  
+.profil img{  
+  width:100%;  
+}  
+
+
+
+
+        h2 {  
+            width: 95%;  
+            font-size:30px;   
+            background-color: #778899;   
+
+       }  
+
+        table {  
+            width: 98%;  
+            border-collapse: collapse; justify-content: center; /* Horizontal center */  
+            align-items: center;  
+        }  
+        th, td {  
+            border: 1px solid black;  
+            padding: 8px;  
+            text-align: left;  
+        }  
+        th {  
+            background-color: #696969;  
+        }  
+
+
+    .navbar {  
+            position: fixed; /* Membuat navbar tetap di atas */  
+            top: 0;  
+            width: 100%;  
+            background-color: #7FFF00;  
+            overflow: hidden;  
+            z-index: 1000; /* Memastikan navbar berada di atas konten lain */  
+        }  
+
+        /* Gaya untuk tautan dalam navbar */  
+        .navbar a {  
+            float: left;  
+            display: block;  
+            color: black;  
+            text-align: center;  
+            padding: 5px 5px;  
+            text-decoration: blink;  
+            font-size: 17px;  
+        }  
+
+    /* Ubah warna tautan saat dihover */  
+        .navbar a:hover {  
+            background-color: #ddd;  
+            color: black;  
+        }  
+
+        /* Tambahkan padding ke konten halaman untuk menghindari konten terpotong oleh navbar */  
+        .content {  
+            padding: 60px 20px;  
+            height: 1500px; /* Menambah tinggi halaman untuk memungkinkan pengguliran */  
+        }  
+
+        #backToTopBtn {  
+            display: block; /* Tampilkan tombol dari awal */  
+            position: fixed;  
+            bottom: 15px;  
+            right: 15px;  
+            z-index: 99;  
+            border: none;  
+            outline: none;  
+            background-color: #7FFF00;  
+            color: black;  
+            cursor: pointer;  
+            padding: 15px;  
+            border-radius: 10px;  
+            font-size: 18px;  
+        }  
+         #backToTopBtn:hover {  
+            background-color: #555;   
+        }  
+
+
+           input, select, textarea {  
+      padding: 5px;  
+      margin-bottom: 10px;  
+      background-color: #333;  
+      color: #fff;  
+      border: 1px solid #666;  
+    }  
+
+    textarea {  
+      width: 100%;  
+      height: 150px;  
+    }  
+
+    button {  
+      padding: 8px 16px;  
+      margin: 5px;  
+      color: white;  
+      border: none;  
+      cursor: pointer;  
+    }  
+
+       .fire-btn {  
+      background: linear-gradient(45deg, #ff6a00, #ff0000, #ff6a00);  
+      animation: fire 1s infinite;  
+      border-radius: 5px;  
+    }  
+
+    @keyframes fire {  
+      0% { box-shadow: 0 0 5px #ff6a00; }  
+      50% { box-shadow: 0 0 15px #ff0000; }  
+      100% { box-shadow: 0 0 5px #ff6a00; }  
+    }  
+
+    #infoSummary {  
+      background-color: #2a2a2a;  
+      padding: 10px;  
+      border: 1px solid #555;  
+      margin-bottom: 10px;  
+    }  
+
+  .hapus-btn {  
+    color: red;  
+    font-weight: bold;  
+    background: none;  
+    border: none;  
+    cursor: pointer;  
+  }  
+
+
+        </style>  
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"  
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>  
+    <title>Input Tabungan Bulanan | BANK RISMA</title>  
+</head>  
+
+<body class="bg-dark text-light">  
+
+
+    <div class="col-lg-3 d-flex flex-column align-items-center justify-content-center border-custom py-4">  
+
+
+
+        <div class="d-block border-light border border-2 rounded-circle overflow-hidden" style="width: 8em;"  
+                data-bs-toggle="modal" data-bs-target="#showImage" id="profile">  
+
+                <img class="img-fluid">  
+            </div>  
+            <span class="pt-3 text-center">  
+
+                 <h1><i class="fas fa-wallet">  
+
+    </i> BANK RISMA</h1>  
+
+            </span>  
+
+
+
+       </div>  
+
+    <!-- Modal -->  
+    <div class="modal fade" id="showImage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  
+        aria-labelledby="showImageLabel" aria-hidden="true">  
+        <div class="modal-dialog">  
+            <div class="modal-content">  
+                <div class="modal-header">  
+                    <h5 class="modal-title" id="showImageLabel">RISMA Tanjung Bulan</h5>  
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>  
+                </div>  
+                <div class="modal-body">  
+                    <img class="img-fluid img-thumbnail profile">  
+                </div>  
+            </div>  
+        </div>  
+    </div>   
+
+    <script>  
+        // * img position  
+        const position = '/risma_1.png';  
+
+        // ! Don't change this line  
+        $(document).ready(() => {  
+            $('#profile img').attr('src', position);  
+        });  
+    </script>  
+
+    <center>  
+
+
+
+    <script>  
+        // list links  
+        const links = [  
+
+
+            {  
+
+                url: '/bank-risma',  
+                icon: 'fa-solid fa-building-columns',  
+                text: 'Laporan BANK RISMA',  
+            },  
+
+
+            {  
+
+                url: '/risma',  
+                icon: 'fa-solid fa-rupiah-sign',  
+                text: 'Laporan KAS RISMA',  
+            },  
+
+
+
+        ];  
+
+        // ! Don't change this line  
+        $(document).ready(() => {  
+            const callbackMap = (element, i) => {  
+                return  /*html*/`  
+                <li class="my-3 py-3 px-5 border border-light">  
+                    <a target="" href="${element.url}" class="text-decoration-none"  
+                        style="font-weight: 450;">  
+                        <i class="fa-fw ${element.icon}"></i>  
+                        ${element.text}  
+                    </a>  
+                </li>  
+                `;  
+            };  
+            $('.list-unstyled.links').append($.map(links, callbackMap));  
+        });  
+    </script>  
+
+
+
+
+
+
+
+
+    </center>  
+
+
+    <script>  
+        $(document).ready(() => {  
+            $('#profile').on('click', () => {  
+                $('img.img-fluid.profile').attr('src',  
+                    $('#profile img').attr('src')  
+                );  
+            })  
+        });  
+    </script>  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"  
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"  
+        crossorigin="anonymous"></script>  
+
+
+<center>  
+
+    <p id="last-updated" style="font-style: italic; font-size: 14px;"></p>  
+
+<script>  
+  const updatedAt = new Date(document.lastModified);  
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };  
+  document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + updatedAt.toLocaleDateString('id-ID', options);  
+</script>  
+
+
+    <script src="namaputra.js"></script>
+<script src="namaputri.js"></script>
+
+<h2>Input Tabungan</h2><br>
+<label>Kategori:</label>
+<select id="kategori" onchange="updateNamaOptions()">
+  <option value="putra">Putra</option>
+  <option value="putri">Putri</option>
+</select><br>
+
+<label>Nama:</label>
+<select id="nama"></select><br>
+
+<label>Jumlah (Rp):</label>
+<button onclick="tambahNol()" style="color: green; font-weight: bold;">+000</button><br>
+<input type="number" id="jumlah"><br>
+
+<label>Tipe:</label>
+<select id="tipe">
+  <option value="tabungan">Tabungan</option>
+  <option value="penarikan">Penarikan</option>
+</select><br>
+
+<button class="fire-btn" onclick="tambahData()">Tambahkan</button>            
+
+<hr>
+
+<h3>Data Tabungan Putra</h3>
+<table border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr><th>Nama</th><th>Tabungan</th><th>Penarikan</th><th>Aksi</th></tr>
+  </thead>
+  <tbody id="tabelputra"></tbody>
+</table>
+
+<hr>
+
+<h3>Data Tabungan Putri</h3>
+<table border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr><th>Nama</th><th>Tabungan</th><th>Penarikan</th><th>Aksi</th></tr>
+  </thead>
+  <tbody id="tabelputri"></tbody>
+</table>
+
+<div id="infoSummary" style="margin-top:20px; font-size: 1.1em;"></div>
+
+<!-- Tombol Aksi -->
+<div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
+  <button onclick="salinRisma()" style="padding: 12px; font-weight: bold; font-size: 16px; background-color:#ffc107; color:black; border:none; border-radius:6px;">📋 Salin Data Untuk Petinggi RISMA</button>
+
+  <div style="display: flex; gap: 10px;">
+    <button onclick="salinJS()" style="background-color: #333; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;">📋 Salin Kode</button>
+
+    <button onclick="kirimWA()" style="background-color: #25D366; color: white; padding: 10px 20px; border: none; font-weight: bold; border-radius: 5px; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" height="20" style="background:white; border-radius:50%;">
+      Kirim ke WA
+    </button>
+  </div>
+</div>
+
+<script>
+  const data = { putra: [], putri: [] };
+
+  window.onload = () => {
+    updateNamaOptions();
+  };
+
+  function updateNamaOptions() {
+    const kategori = document.getElementById("kategori").value;
+    const select = document.getElementById("nama");
+    select.innerHTML = "";
+
+    const list = kategori === "putra" ? namaPutra : namaPutri;
+    list.forEach(nama => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      select.appendChild(opt);
+    });
+  }
+
+  function tambahData() {
+    const jenis = document.getElementById("kategori").value;
+    const nama = document.getElementById("nama").value;
+    const tipe = document.getElementById("tipe").value;
+    const jumlahInput = document.getElementById("jumlah");
+    const jumlah = parseInt(jumlahInput.value) || 0;
+
+    if (jumlah <= 0) return alert("Masukkan jumlah valid!");
+
+    let item = data[jenis].find(d => d.nama === nama);
+    if (!item) {
+      item = { nama, tabungan: 0, penarikan: 0 };
+      data[jenis].push(item);
+    }
+
+    if (tipe === "tabungan") item.tabungan += jumlah;
+    else item.penarikan += jumlah;
+
+    jumlahInput.value = "";
+    updateTabel(jenis);
+    updateInfoSummary();
+  }
+
+  function hapusData(jenis, index) {
+    if (confirm("Hapus data ini?")) {
+      data[jenis].splice(index, 1);
+      updateTabel(jenis);
+      updateInfoSummary();
+    }
+  }
+
+  function updateTabel(jenis) {
+    const tbody = document.getElementById("tabel" + jenis);
+    tbody.innerHTML = "";
+
+    data[jenis].forEach((item, i) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.nama}</td>
+          <td>${item.tabungan}</td>
+          <td>${item.penarikan}</td>
+          <td><span style="color:red; cursor:pointer;" onclick="hapusData('${jenis}', ${i})">Hapus</span></td>
+        </tr>
+      `;
+    });
+  }
+
+  function updateInfoSummary() {
+    let tabPutra = 0, tabPutri = 0, tarikPutra = 0, tarikPutri = 0;
+
+    data.putra.forEach(d => {
+      tabPutra += d.tabungan;
+      tarikPutra += d.penarikan;
+    });
+    data.putri.forEach(d => {
+      tabPutri += d.tabungan;
+      tarikPutri += d.penarikan;
+    });
+
+    document.getElementById("infoSummary").innerHTML = `
+      <strong>Ringkasan:</strong><br>
+      Tabungan Putra: Rp${tabPutra.toLocaleString()}<br>
+      Tabungan Putri: Rp${tabPutri.toLocaleString()}<br>
+      <strong>Total Tabungan: Rp${(tabPutra + tabPutri).toLocaleString()}</strong><br>
+      <strong>Total Penarikan: Rp${(tarikPutra + tarikPutri).toLocaleString()}</strong>
+    `;
+  }
+
+  function tambahNol() {
+    const input = document.getElementById("jumlah");
+    if (!input.value) return alert("Isi jumlah dulu ya!");
+    input.value = input.value + "000";
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function salinJS() {
+    const teks = JSON.stringify(data, null, 2);
+    navigator.clipboard.writeText(teks).then(() => alert("Disalin ke clipboard!"));
+  }
+
+  function kirimWA() {
+    const isi = encodeURIComponent(JSON.stringify(data, null, 2));
+    const noHP = "088971344131";
+    const url = `https://wa.me/${noHP.replace(/^0/, "62")}?text=${isi}`;
+    window.open(url, "_blank");
+  }
+
+  function salinRisma() {
+    const bulanTahun = new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+    let isi = `✍️ *Input Tabungan Bulan ${bulanTahun}*\n\n`;
+
+    isi += `👨 *Data Tabungan Putra*\n`;
+    if (data.putra.length === 0) isi += "-\n";
+    else data.putra.forEach((d, i) => {
+      const total = d.tabungan - d.penarikan;
+      const simbol = total >= 0 ? "➕" : "➖";
+      isi += `${i + 1}. ${d.nama} ${simbol}${Math.abs(total).toLocaleString("id-ID")}\n`;
+    });
+
+    isi += `\n👧 *Data Tabungan Putri*\n`;
+    if (data.putri.length === 0) isi += "-\n";
+    else data.putri.forEach((d, i) => {
+      const total = d.tabungan - d.penarikan;
+      const simbol = total >= 0 ? "➕" : "➖";
+      isi += `${i + 1}. ${d.nama} ${simbol}${Math.abs(total).toLocaleString("id-ID")}\n`;
+    });
+
+    const totalTabPutra = data.putra.reduce((a, b) => a + b.tabungan, 0);
+    const totalTabPutri = data.putri.reduce((a, b) => a + b.tabungan, 0);
+    const totalTarik = [...data.putra, ...data.putri].reduce((a, b) => a + b.penarikan, 0);
+    const totalTab = totalTabPutra + totalTabPutri;
+
+    isi += `\n💡 *Ringkasan*\n`;
+    isi += `Tabungan Putra : Rp${totalTabPutra.toLocaleString("id-ID")}\n`;
+    isi += `Tabungan Putri : Rp${totalTabPutri.toLocaleString("id-ID")}\n`;
+    isi += `Total Tabungan : Rp${totalTab.toLocaleString("id-ID")}\n`;
+    isi += `Total Penarikan : Rp${totalTarik.toLocaleString("id-ID")}\n\n`;
+
+    isi += `_Tolong dicek ulang ya teman-teman, jika data sudah sesuai dengan buku tabungan yg ditulis Tama & Putri segera beri respon 👍. makasih🙏_`;
+
+    navigator.clipboard.writeText(isi).then(() => {
+      alert("📋 Data untuk petinggi RISMA disalin!");
+    });
+  }
+</script>
+
+
+<hr/>  
+    <ul class="list-unstyled links">  
+    </ul>  
+
+
+
+
+<p></p> <br/>  
+
+    Made With ❤️ by Hamba Allah</center>  
+<br></body>  
+
+</html>  
