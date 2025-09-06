@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.1.1/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" /> -->
+
+<script src="https://kit.fontawesome.com/73db2f45cc.js" crossorigin="anonymous"></script>
+<script src="fungsi.js"></script>
+    <script src="/bank-risma/layout.js"></script>
+
+   <link rel="stylesheet" href="/bank-risma/tampilan.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>BANK RISMA | Rekap Tabungan Online</title>
+</head>
+
+
+    <body class="bg-dark text-light">
+
+
+        <div class="col-lg-3 d-flex flex-column align-items-center justify-content-center border-custom py-4">
+
+
+
+        <div class="d-block border-light border border-2 rounded-circle overflow-hidden" style="width: 8em;"
+                data-bs-toggle="modal" data-bs-target="#showImage" id="profile">
+
+                <img class="img-fluid">
+            </div>
+            <span class="pt-3 text-center">
+
+                 <h1><i class="fas fa-wallet">
+
+    </i> BANK RISMA</h1>
+
+            </span>
+
+
+
+       </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="showImage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="showImageLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showImageLabel">RISMA Tanjung Bulan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid img-thumbnail profile">
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script>
+        // * img position
+        const position = '/img/risma_1.png';
+
+        // ! Don't change this line
+        $(document).ready(() => {
+            $('#profile img').attr('src', position);
+        });
+    </script>
+
+    <center>
+
+
+<!--
+    <script>
+        // list links
+        const links = [
+            
+            
+            {
+
+                url: 'jadwal.html',
+                icon: 'fas fa-calendar-alt',
+                text: 'Jadwal Pertandingan',
+            },
+           
+            
+            {
+
+                url: 'hasil.html',
+                icon: 'fas fa-hourglass-end',
+                text: 'Hasil Pertandingan',
+            },
+
+            
+           
+        ];
+
+        // ! Don't change this line
+        $(document).ready(() => {
+            const callbackMap = (element, i) => {
+                return  /*html*/`
+                <li class="my-3 py-3 px-5 border border-light">
+                    <a target="" href="${element.url}" class="text-decoration-none"
+                        style="font-weight: 450;">
+                        <i class="fa-fw ${element.icon}"></i>
+                        ${element.text}
+                    </a>
+                </li>
+                `;
+            };
+            $('.list-unstyled.links').append($.map(links, callbackMap));
+        });
+    </script>
+
+ -->
+
+
+
+
+
+
+    </center>
+
+
+    <script>
+        $(document).ready(() => {
+            $('#profile').on('click', () => {
+                $('img.img-fluid.profile').attr('src',
+                    $('#profile img').attr('src')
+                );
+            })
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+
+
+        <center>
+
+
+
+<p id="last-updated" style="font-style: italic; font-size: 14px;"></p>
+
+<script>
+  const updatedAt = new Date(document.lastModified);
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };
+  document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + updatedAt.toLocaleDateString('id-ID', options);
+</script>
+
+
+    <h2>Total Tabungan</h2>                
+<div id="rekap-tabungan"></div>   
+
+
+          <!-- Tombol Salin Rekap Total -->
+<div style="margin-top: 10px;">
+  <button onclick="salinRekapTotal()" style="background-color:#4a148c;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;font-size:16px;cursor:pointer;">
+    📋 Salin Rekap Total Tabungan
+  </button>
+</div>
+<hr>
+
+<h2>Laporan Bulanan</h2>                
+<div id="tabungan-bulanan"></div>
+
+
+
+    <div id="footer-placeholder"></div>
+
+<!-- Notifikasi Sambutan -->
+<div id="notifRisma">
+  <div class="notif-box">
+
+     <center><b>Selamat Datang di Server Resmi<br>BANK RISMA !!</b>
+     </center>
+      <br>
+
+
+    <div class="chat-message">
+      <img src="/risma/img/pulung.png" alt="Pulung">
+      <div class="message-text">
+        Server ini diciptakan untuk membantu <strong>Tama</strong> dan <strong>Putri</strong> melakukan pendataan dan pengelolaan uang secara otomatis.
+      </div>
+    </div>
+    <div class="chat-message">
+      <img src="/risma/img/tama.jpg" alt="Tama">
+      <div class="message-text">
+       Server ini baru akan dirilis pada bulan <strong>Agustus 2025</strong> ya ges.
+      </div>
+    </div>
+    <div class="chat-message">
+      <img src="/risma/img/putri.jpg" alt="Putri">
+      <div class="message-text">
+       Tapi kalo kamu pengen liat contoh gambarannya seperti apa, boleh banget kok!!
+      </div>
+    </div>
+    <p class="chat-question"><em>Mau lanjut ngintip dulu gak?</em></p>
+    <button onclick="document.getElementById('notifRisma').style.display='none'">Ok Lanjut</button>
+  </div>
+</div>    
+
+
+<!-- Tombol Chat WhatsApp -->
+
+    <!-- Tombol WA Kanan Bawah -->
+  <div class="chat-wa-btn" onclick="toggleForm()">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Chat WA">
+  </div>
+
+  <!-- Popup Bantuan Kiri Bawah -->
+  <div class="bantuan-popup" id="bantuanPopup" onclick="toggleForm()">
+    <img src="/risma/img/pulung.png" alt="Profil Admin" class="bantuan-img" id="bantuanImg">
+    <div class="bantuan-teks" id="bantuanTeks">Butuh bantuan?</div>
+  </div>
+
+  <!-- Form WA -->
+  <div class="form-popup" id="formPopup">
+    <div class="form-header">
+      <span>Hubungi Admin</span>
+      <button onclick="closeForm()">❌</button>
+    </div>
+    <div class="form-body">
+      <label for="adminSelect">Pilih Admin</label>
+      <select id="adminSelect" onchange="updateProfile()">
+        <option value="server">Dukungan Server</option>
+        <option value="putra">Tabungan Putra</option>
+        <option value="putri">Tabungan Putri</option>
+      </select>
+
+      <label for="message">Isi Pesan</label>
+      <textarea id="message" rows="3" placeholder="Tulis pesan..."></textarea>
+
+      <div class="form-admin">
+        <img id="adminImg" src="/risma/img/pulung.png" alt="Foto Admin">
+        <span id="adminName">Pulung</span>
+      </div>
+
+      <button class="kirim-btn" onclick="sendWA()">Kirim via WhatsApp</button>
+    </div>
+  </div>
+
+
+
+
+
+    </body>
+
+    </html>
