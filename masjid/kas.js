@@ -81,6 +81,14 @@ amount: 15000,
 note: "",
 receipt: ""
 },
+{
+date: "2025-09-12",
+description: "Infak Jumat",
+type: "income",
+amount: 35000,
+note: "",
+receipt: ""
+},
   ]
 
 
