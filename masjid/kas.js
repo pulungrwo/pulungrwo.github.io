@@ -94,8 +94,16 @@ date: "2025-09-16",
 description: "Obat Lulangan",
 type: "expense",
 amount: 70000,
-note: "beli online Herbisida Amifos 65.000 + biaya admin brilink 5.000",
+note: "beli online Herbisida GluBest 65.000 + biaya admin brilink 5.000",
 receipt: "/masjid/bukti/obat-lulangan-16sep2025.jpg"
+},
+{
+date: "2025-09-19",
+description: "Infak Jumat",
+type: "income",
+amount: 12000,
+note: "",
+receipt: ""
 },
   ]
 
