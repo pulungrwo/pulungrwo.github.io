@@ -105,6 +105,14 @@ amount: 12000,
 note: "",
 receipt: ""
 },
+{
+date: "2025-09-19",
+description: "Konsumsi Rapat",
+type: "expense",
+amount: 53000,
+note: "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian An-Nisa",
+receipt: ""
+},
   ]
 
 
