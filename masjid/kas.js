@@ -113,6 +113,14 @@ amount: 53000,
 note: "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian An-Nisa",
 receipt: ""
 },
+{
+date: "2025-09-21",
+description: "Gotong Royong",
+type: "expense",
+amount: 52500,
+note: "beli alat kebersihan 35.000 + konsumsi 17.500",
+receipt: ""
+},
   ]
 
 
