@@ -89,7 +89,6 @@ function showImageModal(src) {
   img.style.boxShadow = "0 0 20px rgba(0,0,0,0.5)";
   img.style.animation = "zoomIn 0.3s ease";
 
-  // Klik di mana saja termasuk gambar akan menutup modal
   overlay.addEventListener("click", () => overlay.remove());
   img.addEventListener("click", () => overlay.remove());
 
@@ -97,8 +96,8 @@ function showImageModal(src) {
   document.body.appendChild(overlay);
 }
 
-// Popup detail transaksi
-function showDatePopup(date, transactionsForDate, anchorElement) {
+// Popup detail transaksi (hanya satu transaksi)
+function showTransactionPopup(tx, anchorElement) {
   const existing = document.getElementById("datePopup");
   if (existing) existing.remove();
 
@@ -108,52 +107,40 @@ function showDatePopup(date, transactionsForDate, anchorElement) {
 
   const header = document.createElement("div");
   header.className = "popup-header";
-  header.innerHTML = `<strong>Riwayat Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
+  header.innerHTML = `<strong>Detail Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
   popup.appendChild(header);
 
-  if (transactionsForDate.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "popup-empty";
-    empty.textContent = `Tidak ada transaksi di tanggal ${formatTanggalPanjang(date)}.`;
-    popup.appendChild(empty);
-  } else {
-    transactionsForDate.forEach(tx => {
-      const item = document.createElement("div");
-      item.className = "popup-item";
-      item.style.padding = "10px 0";
-      item.style.borderBottom = "1px solid rgba(255,255,255,0.08)";
+  let receiptHTML = "";
+  if (tx.receipt) {
+    receiptHTML = `
+      <div style="margin-top:8px;">
+        <img src="${tx.receipt}" alt="Bukti" style="max-width:100px;cursor:pointer;border-radius:6px;">
+      </div>
+    `;
+  }
 
-      let receiptHTML = "";
-      if (tx.receipt) {
-        receiptHTML = `
-          <div style="margin-top:8px;">
-            <img src="${tx.receipt}" alt="Bukti" style="max-width:100px;cursor:pointer;border-radius:6px;">
-          </div>
-        `;
-      }
+  const item = document.createElement("div");
+  item.className = "popup-item";
+  item.style.padding = "10px 0";
+  item.innerHTML = `
+    <div style="font-weight:bold; margin-bottom:6px;">
+      ${formatTanggalPanjang(tx.date)} - ${tx.description}
+    </div>
+    <div style="margin-bottom:6px; font-size:0.9rem; color: var(--muted);">
+      ${tx.note || "-"}
+    </div>
+    <div style="font-size:0.9rem; color: var(--muted);">
+      <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
+      <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
+      <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
+    </div>
+    ${receiptHTML}
+  `;
+  popup.appendChild(item);
 
-      item.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:6px;">
-          ${formatTanggalPanjang(tx.date)} - ${tx.description}
-        </div>
-        <div style="margin-bottom:6px; font-size:0.9rem; color: var(--muted);">
-          ${tx.note || "-"}
-        </div>
-        <div style="font-size:0.9rem; color: var(--muted);">
-          <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
-          <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
-          <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
-        </div>
-        ${receiptHTML}
-      `;
-
-      popup.appendChild(item);
-
-      if (tx.receipt) {
-        const img = item.querySelector("img");
-        img.addEventListener("click", () => showImageModal(tx.receipt));
-      }
-    });
+  if (tx.receipt) {
+    const img = item.querySelector("img");
+    img.addEventListener("click", () => showImageModal(tx.receipt));
   }
 
   const closeBtn = header.querySelector(".close-btn");
@@ -185,26 +172,29 @@ function renderSummaryTable() {
   ledger.forEach(row => {
     const tr = document.createElement("tr");
 
+    // Tanggal tidak diklik lagi
     const dateTd = document.createElement("td");
-    const span = document.createElement("span");
-    span.innerHTML = formatTanggalPendekHTML(row.date);
-    span.className = "clickable-date";
-    span.style.cursor = "pointer";
-    span.style.textDecoration = "underline";
-    span.addEventListener("click", () => {
-      const ledgerFull = computeLedger();
-      const sameDate = ledgerFull.filter(tx => tx.date === row.date);
-      showDatePopup(row.date, sameDate, span);
-    });
-    dateTd.appendChild(span);
+    dateTd.innerHTML = formatTanggalPendekHTML(row.date);
 
+    // Income
     const incomeTd = document.createElement("td");
     incomeTd.textContent = row.type === "income" ? (row.amount / 1000).toLocaleString("id-ID") : "-";
-    if (row.type === "income") incomeTd.classList.add("income");
+    if (row.type === "income") {
+      incomeTd.classList.add("income");
+      incomeTd.style.cursor = "pointer";
+      incomeTd.style.textDecoration = "underline";
+      incomeTd.addEventListener("click", () => showTransactionPopup(row, incomeTd));
+    }
 
+    // Expense
     const expenseTd = document.createElement("td");
     expenseTd.textContent = row.type === "expense" ? (row.amount / 1000).toLocaleString("id-ID") : "-";
-    if (row.type === "expense") expenseTd.classList.add("expense");
+    if (row.type === "expense") {
+      expenseTd.classList.add("expense");
+      expenseTd.style.cursor = "pointer";
+      expenseTd.style.textDecoration = "underline";
+      expenseTd.addEventListener("click", () => showTransactionPopup(row, expenseTd));
+    }
 
     const balanceTd = document.createElement("td");
     balanceTd.textContent = (row.balanceAfter / 1000).toLocaleString("id-ID");
