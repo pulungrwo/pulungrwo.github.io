@@ -63,16 +63,14 @@ h1, h2 {
 
 /* Tabel kas */
 .table-wrapper {
-  /* nonaktifkan scroll jika ingin muat di satu layar, jangan pakai overflow-x:auto */
   margin-top: 6px;
 }
 
 .kas-table {
-  width: 100%; /* hampir penuh, sesuaikan container sehingga muat satu layar */
+  width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
   background: transparent;
-  /* hapus min-width agar tidak memaksa scroll */
 }
 
 .kas-table th,
@@ -85,11 +83,11 @@ h1, h2 {
 .kas-table thead th {
   position: sticky;
   top: 0;
-  background: #111; /* warna gelap elegan, tidak transparan */
+  background: #111;
   font-weight: 600;
   text-align: left;
-  color: #f0f0f0; /* teks terang agar kontras */
-  z-index: 1; /* pastikan sticky bekerja di atas baris lain */
+  color: #f0f0f0;
+  z-index: 1;
 }
 
 .kas-table tbody tr:nth-child(odd) {
@@ -114,14 +112,18 @@ h1, h2 {
   background: rgba(255,255,255,0.1);
 }
 
-/* Tanggal link */
-.kas-table a {
-  color: var(--text);
+/* Nilai Masuk/Keluar yang bisa diklik */
+.clickable-amount {
+  cursor: pointer;
   text-decoration: underline;
   font-weight: 600;
-  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.clickable-amount:hover {
+  color: #ffffff;
 }
 
+/* Legend */
 .legend {
   margin-top: 10px;
   display: flex;
@@ -174,7 +176,6 @@ h1, h2 {
   color: var(--text);
 }
 
-/* detail tipe/nominal/saldo dengan ukuran sama seperti catatan */
 .h-details {
   margin-top: 6px;
   display: flex;
@@ -212,14 +213,14 @@ h1, h2 {
   margin-top: 12px;
 }
 
-/* Responsive: tetap mendatar */
+/* Responsive */
 @media (max-width: 1000px) {
   .kas-table {
     width: 100%;
   }
 }
 
-/* Scrollbar custom (optional) */
+/* Scrollbar custom */
 .table-wrapper::-webkit-scrollbar {
   height: 10px;
 }
@@ -235,21 +236,19 @@ h1, h2 {
   background: rgba(255,255,255,0.25);
 }
 
-/* Tombol chat WhatsApp - terang/berisi */
-
+/* Tombol chat WA */
 .chat-wa-btn img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   transition: transform 0.3s ease;
   background: #ffffff;
-  padding: 4px; /* dikurangi agar tidak membesar */
+  padding: 4px;
   box-sizing: content-box;
   border: 2px solid #25D366;
 }
 
 .chat-wa-btn {
-  /* bisa tetap ada drop-shadow ringan */
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -263,8 +262,7 @@ h1, h2 {
   box-shadow: 0 10px 25px rgba(37,211,102,0.35);
 }
 
-
-/* Popup Bantuan - terang */
+/* Popup Bantuan */
 .bantuan-popup {
   position: fixed;
   bottom: 20px;
@@ -303,7 +301,7 @@ h1, h2 {
   100% { transform: translateX(0px); }
 }
 
-/* Form Pop Up - terang */
+/* Form Pop Up */
 .form-popup {
   display: none;
   position: fixed;
@@ -383,8 +381,7 @@ h1, h2 {
   background-color: #1ebc5e;
 }
 
-
-/* Popup riwayat per tanggal */
+/* Popup detail transaksi */
 .date-popup {
   position: absolute;
   max-width: 360px;
@@ -444,8 +441,7 @@ h1, h2 {
   border-radius: 6px;
 }
 
-
-//saldo saat ini
+/* saldo */
 .saldo-wrapper {
   display: flex;
   justify-content: center;
@@ -474,26 +470,18 @@ h1, h2 {
 .saldo-amount {
   font-size: 30px;
   font-weight: bold;
-  color: #10b981; /* hijau */
+  color: #10b981;
   transition: all 0.3s ease;
 }
 
 .saldo-amount.negative {
-  color: #ef4444; /* merah */
+  color: #ef4444;
 }
 
-
-//tanggal di tabel
-.clickable-date {
-  display: inline-block;
-  line-height: 1.2;
-  text-align: center;
-}
-
-// memaksa tabel kas rata tengah
+/* Tabel rata tengah */
 .kas-table td:nth-child(1),
 .kas-table th:nth-child(1) {
-  text-align: center; /* Tanggal */
+  text-align: center;
 }
 
 .kas-table td:nth-child(2),
@@ -502,7 +490,7 @@ h1, h2 {
 .kas-table th:nth-child(2),
 .kas-table th:nth-child(3),
 .kas-table th:nth-child(4) {
-  text-align: right; /* Masuk, Keluar, Saldo */
+  text-align: right;
 }
 
 /* Animasi Zoom In + Fade In */
@@ -523,4 +511,4 @@ h1, h2 {
 
 .zoom-in-fade {
   animation: zoomInFade 0.5s ease-out forwards;
-  }
+}
