@@ -32,20 +32,17 @@ function formatTanggalPanjang(dateStr) {
   });
 }
 
-// ===== Variabel global periode aktif =====
+// ===== State Periode Aktif =====
 let currentPeriode = null;
 
-// Ambil semua transaksi
+// Ambil transaksi sesuai periode
 function getRawTransactions() {
   if (window.kasData) {
-    if (currentPeriode && window.kasData[currentPeriode]) {
-      return window.kasData[currentPeriode];
+    if (!currentPeriode) {
+      const periodes = Object.keys(window.kasData).sort((a, b) => a - b);
+      currentPeriode = periodes[periodes.length - 1];
     }
-    // default: pakai periode terakhir
-    const periodes = Object.keys(window.kasData).sort((a, b) => a - b);
-    const latest = periodes[periodes.length - 1];
-    currentPeriode = latest;
-    return window.kasData[latest] || [];
+    return window.kasData[currentPeriode] || [];
   }
   console.warn("window.kasData tidak tersedia, menggunakan array kosong.");
   return [];
@@ -106,10 +103,64 @@ function showImageModal(src) {
   document.body.appendChild(overlay);
 }
 
-// ... (fungsi popup dan renderSummaryTable tetap sama) ...
+// ... (fungsi showTransactionPopup tetap sama)
+
+// Render tabel ringkasan
+function renderSummaryTable() {
+  const ledger = computeLedger();
+  const tbody = document.querySelector("#summary-body");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  ledger.forEach(row => {
+    const tr = document.createElement("tr");
+
+    const dateTd = document.createElement("td");
+    dateTd.innerHTML = formatTanggalPendekHTML(row.date);
+
+    const incomeTd = document.createElement("td");
+    incomeTd.textContent = row.type === "income" ? (row.amount / 1000).toLocaleString("id-ID") : "-";
+    if (row.type === "income") {
+      incomeTd.classList.add("income");
+      incomeTd.style.cursor = "pointer";
+      incomeTd.style.textDecoration = "underline";
+      incomeTd.addEventListener("click", () => showTransactionPopup(row, incomeTd));
+    }
+
+    const expenseTd = document.createElement("td");
+    expenseTd.textContent = row.type === "expense" ? (row.amount / 1000).toLocaleString("id-ID") : "-";
+    if (row.type === "expense") {
+      expenseTd.classList.add("expense");
+      expenseTd.style.cursor = "pointer";
+      expenseTd.style.textDecoration = "underline";
+      expenseTd.addEventListener("click", () => showTransactionPopup(row, expenseTd));
+    }
+
+    const balanceTd = document.createElement("td");
+    balanceTd.textContent = (row.balanceAfter / 1000).toLocaleString("id-ID");
+
+    tr.append(dateTd, incomeTd, expenseTd, balanceTd);
+    tbody.appendChild(tr);
+  });
+
+  const sums = summary();
+  const tfoot = document.querySelector("#summary-foot");
+  if (!tfoot) return;
+
+  tfoot.innerHTML = `
+    <tr class="totals">
+      <td><strong>Total</strong></td>
+      <td class="income"><strong>${(sums.income / 1000).toLocaleString("id-ID")}</strong></td>
+      <td class="expense"><strong>${(sums.expense / 1000).toLocaleString("id-ID")}</strong></td>
+      <td><strong>${((sums.income - sums.expense) / 1000).toLocaleString("id-ID")}</strong></td>
+    </tr>
+  `;
+}
+
+// ... (fungsi renderHistoryList tetap sama)
 
 // ===== Pagination Periode =====
-function renderPeriodePagination(activePeriode, periodes) {
+function renderPeriodePagination(current, periodes) {
   const container = document.getElementById("periode-pagination");
   if (!container) return;
 
@@ -118,7 +169,7 @@ function renderPeriodePagination(activePeriode, periodes) {
     const btn = document.createElement("button");
     btn.textContent = "Kas Periode " + periode;
 
-    if (periode === activePeriode) {
+    if (periode === current) {
       btn.className = "periode-active";
       btn.disabled = true;
     } else {
@@ -126,26 +177,8 @@ function renderPeriodePagination(activePeriode, periodes) {
       btn.onclick = () => {
         currentPeriode = periode;
         renderSummaryTable();
-        renderHistoryList(1, false);
-        renderPeriodePagination(periode, periodes);
-
-        // update saldo & last updated
-        const saldo = summary().net;
-        const saldoEl = document.getElementById("saldoNow");
-        saldoEl.textContent = formatRupiah(saldo);
-        if (saldo < 0) saldoEl.classList.add("negative");
-        else saldoEl.classList.remove("negative");
-
-        const allTx = getRawTransactions();
-        if (allTx.length > 0) {
-          const latest = allTx.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];
-          document.getElementById("last-updated").innerText =
-            "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
-        } else {
-          document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
-        }
-
-        // scroll ke atas
+        renderHistoryList(1);
+        renderPeriodePagination(currentPeriode, periodes);
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
     }
@@ -159,23 +192,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.kasData) {
     const periodes = Object.keys(window.kasData).sort((a, b) => a - b);
     currentPeriode = periodes[periodes.length - 1];
-    renderSummaryTable();
-    renderHistoryList();
     renderPeriodePagination(currentPeriode, periodes);
+  }
 
-    // set saldo awal
-    const saldo = summary().net;
-    const saldoEl = document.getElementById("saldoNow");
-    saldoEl.textContent = formatRupiah(saldo);
-    if (saldo < 0) saldoEl.classList.add("negative");
+  renderSummaryTable();
+  renderHistoryList();
 
-    const allTx = getRawTransactions();
-    if (allTx.length > 0) {
-      const latest = allTx.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];
-      document.getElementById("last-updated").innerText =
-        "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
-    } else {
-      document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
-    }
+  const saldo = summary().net;
+  const saldoEl = document.getElementById("saldoNow");
+  saldoEl.textContent = formatRupiah(saldo);
+  if (saldo < 0) saldoEl.classList.add("negative");
+
+  const allTransactions = getRawTransactions();
+  if (allTransactions.length > 0) {
+    const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];
+    document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
+  } else {
+    document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
   }
 });
