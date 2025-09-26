@@ -2,7 +2,7 @@
 // Penyimpanan data arus kas per tahun Hijriah
 
 const kasData = {
-"1447H": [
+"1447": [
     {
 date: "2025-08-08",
 description: "Panen Jagung",
