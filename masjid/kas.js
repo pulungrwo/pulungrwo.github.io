@@ -129,6 +129,14 @@ amount: 17500,
 note: "konsumsi bersih2 masjid",
 receipt: ""
 },
+{
+date: "2025-09-26",
+description: "Infak Jumat",
+type: "income",
+amount: 15000,
+note: "",
+receipt: ""
+},
   ]
 
 
