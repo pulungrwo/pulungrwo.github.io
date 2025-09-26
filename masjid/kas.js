@@ -7,7 +7,7 @@ const kasData = {
 date: "2025-09-27",
 description: "Sumbangan",
 type: "income",
-amount: 15000000,
+amount: 15000,
 note: "hahahahahahahahahaha",
 receipt: ""
 },
