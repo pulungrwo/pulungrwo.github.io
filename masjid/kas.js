@@ -2,7 +2,17 @@
 // Penyimpanan data arus kas per tahun Hijriah
 
 const kasData = {
-"1447": [
+"1448H": [
+{
+date: "2025-09-27",
+description: "Sumbangan",
+type: "income",
+amount: 15000000,
+note: "hahahahahahahahahaha",
+receipt: ""
+},
+],
+"1447H": [
     {
 date: "2025-08-08",
 description: "Panen Jagung",
