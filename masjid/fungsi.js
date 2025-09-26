@@ -162,7 +162,7 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.zIndex = 9999;
 }
 
-// Render tabel & riwayat
+// Render tabel ringkasan
 function renderSummaryTable() {
   const ledger = computeLedger();
   const tbody = document.querySelector("#summary-body");
@@ -172,7 +172,7 @@ function renderSummaryTable() {
   ledger.forEach(row => {
     const tr = document.createElement("tr");
 
-    // Tanggal tidak diklik lagi
+    // Tanggal statis
     const dateTd = document.createElement("td");
     dateTd.innerHTML = formatTanggalPendekHTML(row.date);
 
@@ -217,12 +217,16 @@ function renderSummaryTable() {
   `;
 }
 
-function renderHistoryList() {
+// ===== Pagination untuk Riwayat =====
+let historyPage = 1;
+const historyPerPage = 5;
+
+function renderHistoryList(page = 1, doScroll = false) {
   const historyContainer = document.querySelector("#history");
   if (!historyContainer) return;
   historyContainer.innerHTML = "";
 
-  const ledger = computeLedger();
+  const ledger = computeLedger().slice().reverse(); // terbaru di atas
   if (ledger.length === 0) {
     const msg = document.createElement("div");
     msg.style.opacity = "0.9";
@@ -234,8 +238,12 @@ function renderHistoryList() {
     return;
   }
 
-  const reversed = ledger.slice().reverse();
-  reversed.forEach(tx => {
+  historyPage = page;
+  const start = (page - 1) * historyPerPage;
+  const end = start + historyPerPage;
+  const items = ledger.slice(start, end);
+
+  items.forEach(tx => {
     const wrapper = document.createElement("div");
     wrapper.className = "history-item";
 
@@ -278,6 +286,46 @@ function renderHistoryList() {
     wrapper.appendChild(sep);
     historyContainer.appendChild(wrapper);
   });
+
+  // Pagination
+  const paginationContainer = document.getElementById("history-pagination");
+  if (paginationContainer) paginationContainer.innerHTML = "";
+  else {
+    const div = document.createElement("div");
+    div.id = "history-pagination";
+    div.className = "pagination";
+    historyContainer.after(div);
+  }
+  const totalPages = Math.ceil(ledger.length / historyPerPage);
+  const container = document.getElementById("history-pagination");
+
+  if (totalPages > 1) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "« Baru";
+    prevBtn.disabled = page === 1;
+    prevBtn.onclick = () => renderHistoryList(page - 1, true);
+    container.appendChild(prevBtn);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement("button");
+      pageBtn.textContent = i;
+      if (i === page) pageBtn.classList.add("active");
+      pageBtn.onclick = () => renderHistoryList(i, true);
+      container.appendChild(pageBtn);
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "Lama »";
+    nextBtn.disabled = page === totalPages;
+    nextBtn.onclick = () => renderHistoryList(page + 1, true);
+    container.appendChild(nextBtn);
+  }
+
+  if (doScroll) {
+    const navHeight = document.querySelector(".nav")?.offsetHeight || 0;
+    const topPos = historyContainer.getBoundingClientRect().top + window.scrollY - navHeight - 10;
+    window.scrollTo({ top: topPos, behavior: "smooth" });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
