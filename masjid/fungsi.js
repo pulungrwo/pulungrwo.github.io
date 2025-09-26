@@ -1,3 +1,4 @@
+// =================== Utilitas ===================
 // Format angka ke Rupiah            
 function formatRupiah(num) {            
   return "Rp " + num.toLocaleString("id-ID");            
@@ -32,12 +33,17 @@ function formatTanggalPanjang(dateStr) {
   });            
 }            
 
-// Ambil semua transaksi            
+// =================== Data & Periode ===================
+let currentPeriode = null;            
+
 function getRawTransactions() {            
+  if (window.kasData && currentPeriode && window.kasData[currentPeriode]) {            
+    return window.kasData[currentPeriode];            
+  }            
   if (window.kas && typeof window.kas.getAllTransactions === "function") {            
     return window.kas.getAllTransactions();            
   }            
-  console.warn("window.kas tidak tersedia, menggunakan array kosong.");            
+  console.warn("Tidak ada data kas tersedia.");            
   return [];            
 }            
 
@@ -62,7 +68,7 @@ function summary() {
   return { income, expense, net: income - expense };            
 }            
 
-// Modal gambar            
+// =================== Modal & Popup ===================
 function showImageModal(src) {            
   const existing = document.getElementById("imageModal");            
   if (existing) existing.remove();            
@@ -96,7 +102,6 @@ function showImageModal(src) {
   document.body.appendChild(overlay);            
 }            
 
-// Popup detail transaksi            
 function showTransactionPopup(tx, anchorElement) {            
   const existing = document.getElementById("datePopup");            
   if (existing) existing.remove();            
@@ -162,7 +167,7 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.zIndex = 9999;            
 }            
 
-// Render tabel ringkasan            
+// =================== Render ===================
 function renderSummaryTable() {            
   const ledger = computeLedger();            
   const tbody = document.querySelector("#summary-body");            
@@ -214,7 +219,6 @@ function renderSummaryTable() {
   `;            
 }            
 
-// ===== Pagination untuk Riwayat =====            
 let historyPage = 1;            
 const historyPerPage = 5;            
 
@@ -319,13 +323,12 @@ function renderHistoryList(page = 1, doScroll = false) {
 
   if (doScroll) {            
     const navHeight = document.querySelector(".nav")?.offsetHeight || 0;            
-    const topPos = historyContainer.getBoundingClientRect().top + window.scrollY - navHeight - 10;            
-    window.scrollTo({ top: topPos, behavior: "smooth" });            
+    window.scrollTo({ top: 0, behavior: "smooth" });            
   }            
 }            
 
-// ===== Pagination Periode =====            
-function renderPeriodePagination(currentPeriode, periodes) {            
+// =================== Pagination Periode ===================
+function renderPeriodePagination(selectedPeriode, periodes) {            
   const container = document.getElementById("periode-pagination");            
   if (!container) return;            
 
@@ -334,13 +337,32 @@ function renderPeriodePagination(currentPeriode, periodes) {
     const btn = document.createElement("button");            
     btn.textContent = "Kas Periode " + periode + " H";            
 
-    if (periode === currentPeriode) {            
+    if (periode === selectedPeriode) {            
       btn.className = "periode-active";            
       btn.disabled = true;            
     } else {            
       btn.className = "periode-btn";            
       btn.onclick = () => {            
-        alert("Pindah ke periode " + periode);            
+        currentPeriode = periode;            
+        renderSummaryTable();            
+        renderHistoryList(1, true);            
+
+        const saldo = summary().net;            
+        const saldoEl = document.getElementById("saldoNow");            
+        saldoEl.textContent = formatRupiah(saldo);            
+        if (saldo < 0) saldoEl.classList.add("negative");            
+        else saldoEl.classList.remove("negative");            
+
+        const allTransactions = getRawTransactions();            
+        if (allTransactions.length > 0) {            
+          const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];            
+          document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);            
+        } else {            
+          document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";            
+        }            
+
+        renderPeriodePagination(periode, periodes);            
+        window.scrollTo({ top: 0, behavior: "smooth" });            
       };            
     }            
 
@@ -348,7 +370,17 @@ function renderPeriodePagination(currentPeriode, periodes) {
   });            
 }            
 
+// =================== Init ===================
 document.addEventListener("DOMContentLoaded", () => {            
+  if (window.kasData) {            
+    const periodes = Object.keys(window.kasData).sort((a, b) => a - b);            
+    currentPeriode = periodes[periodes.length - 1];            
+    renderPeriodePagination(currentPeriode, periodes);            
+  }            
+
+  renderSummaryTable();            
+  renderHistoryList();            
+
   const saldo = summary().net;            
   const saldoEl = document.getElementById("saldoNow");            
   saldoEl.textContent = formatRupiah(saldo);            
@@ -360,15 +392,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);            
   } else {            
     document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";            
-  }            
-
-  renderSummaryTable();            
-  renderHistoryList();            
-
-  // Ambil periode otomatis dari kasData            
-  if (window.kasData) {            
-    const periodes = Object.keys(window.kasData).sort((a, b) => a - b);            
-    const currentPeriode = periodes[periodes.length - 1];            
-    renderPeriodePagination(currentPeriode, periodes);            
   }            
 });
