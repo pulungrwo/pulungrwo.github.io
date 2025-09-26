@@ -26,6 +26,18 @@
       color: #fff;
       border-color: #007bff;
     }
+    /* filter periode */
+    #periode-filter {
+      margin: 15px 0;
+    }
+    #periode-filter label {
+      font-weight: bold;
+      margin-right: 6px;
+    }
+    #periode-filter select {
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
   </style>
 </head><body class="bg-dark text-light">
   <div class="col-lg-3 d-flex flex-column align-items-center justify-content-center border-custom py-4">
@@ -72,6 +84,10 @@
   <p id="last-updated" style="font-style: italic; font-size: 14px;"></p>
 
   <hr>
+
+  <!-- Filter Periode -->
+  <div id="periode-filter"></div>
+
   <h2>Arus Kas</h2>
   <p class="sub">Klik Uang Masuk/Keluar untuk melihat detail transaksi.</p>
 
@@ -96,8 +112,7 @@
   </div>
 </center>
 
-<!-- Pagination Periode -->
-<div class="pagination-wrapper" id="periode-pagination"></div>
+<!-- 🔴 Pagination lama dihapus -->
 
 <!-- Script -->
 <script src="kas.js"></script>
