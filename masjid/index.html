@@ -97,43 +97,11 @@
 </center>
 
 <!-- Pagination Periode -->
-<div class="pagination-wrapper" id="pagination"></div>
+<div class="pagination-wrapper" id="periode-pagination"></div>
 
 <!-- Script -->
 <script src="kas.js"></script>
 <script src="fungsi.js"></script>
-
-<script>
-  const periods = Object.keys(kas.raw).sort((a, b) => b.localeCompare(a)); 
-  let currentPeriod = periods[0]; 
-
-  function renderPagination() {
-    const paginationDiv = document.getElementById("pagination");
-    paginationDiv.innerHTML = "";
-
-    periods.forEach(period => {
-      const btn = document.createElement("button");
-      btn.textContent = period;
-      btn.className = (period === currentPeriod) ? "active" : "";
-      btn.onclick = () => {
-        currentPeriod = period;
-        if (typeof renderKasSummary === "function") {
-          renderKasSummary(period);
-        }
-        if (typeof renderKasHistory === "function") {
-          renderKasHistory(period);
-        }
-        renderPagination();
-      };
-      paginationDiv.appendChild(btn);
-    });
-  }
-
-  // Jalankan saat pertama kali
-  renderPagination();
-  if (typeof renderKasSummary === "function") renderKasSummary(currentPeriod);
-  if (typeof renderKasHistory === "function") renderKasHistory(currentPeriod);
-</script>
 
 <!-- WA support -->
 <div class="chat-wa-btn" onclick="toggleForm()">
