@@ -144,3 +144,36 @@ receipt: ""
 
 
 
+// ================= Fungsi =================
+
+// Ambil semua transaksi dari periode tertentu
+function getTransactionsByPeriod(period) {
+  return kasData[period] || [];
+}
+
+// Ambil semua periode (sort angka)
+function getAllPeriods() {
+  return Object.keys(kasData).sort((a, b) => parseInt(a) - parseInt(b));
+}
+
+// Ambil periode terbaru
+function getLatestPeriod() {
+  const periods = getAllPeriods();
+  return periods[periods.length - 1] || null;
+}
+
+// Ambil semua transaksi dari seluruh periode
+function getAllTransactions() {
+  return Object.values(kasData).flat();
+}
+
+// Ekspor
+if (typeof window !== "undefined") {
+  window.kas = {
+    getTransactionsByPeriod,
+    getAllPeriods,
+    getLatestPeriod,
+    getAllTransactions,
+    raw: kasData
+  };
+}
