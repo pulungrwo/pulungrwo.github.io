@@ -322,8 +322,9 @@ function renderHistoryList(page = 1, doScroll = false) {
   }            
 
   if (doScroll) {            
-    const navHeight = document.querySelector(".nav")?.offsetHeight || 0;            
-    window.scrollTo({ top: 0, behavior: "smooth" });            
+    // scroll ke atas bagian riwayat saja
+    const topPos = historyContainer.getBoundingClientRect().top + window.scrollY - 20;            
+    window.scrollTo({ top: topPos, behavior: "smooth" });            
   }            
 }            
 
@@ -345,7 +346,7 @@ function renderPeriodePagination(selectedPeriode, periodes) {
       btn.onclick = () => {            
         currentPeriode = periode;            
         renderSummaryTable();            
-        renderHistoryList(1, true);            
+        renderHistoryList(1, false);            
 
         const saldo = summary().net;            
         const saldoEl = document.getElementById("saldoNow");            
@@ -362,6 +363,7 @@ function renderPeriodePagination(selectedPeriode, periodes) {
         }            
 
         renderPeriodePagination(periode, periodes);            
+        // periode: scroll sampai atas halaman penuh
         window.scrollTo({ top: 0, behavior: "smooth" });            
       };            
     }            
