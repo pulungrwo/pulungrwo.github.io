@@ -1,4 +1,4 @@
-// =================== Utilitas yoman ===================
+// =================== Utilitas ===================
 // Format angka ke Rupiah            
 function formatRupiah(num) {            
   return "Rp " + num.toLocaleString("id-ID");            
@@ -374,25 +374,42 @@ function renderPeriodePagination(selectedPeriode, periodes) {
 
 // =================== Init ===================
 document.addEventListener("DOMContentLoaded", () => {            
-  if (window.kasData) {            
-    const periodes = Object.keys(window.kasData).sort((a, b) => a - b);            
-    currentPeriode = periodes[periodes.length - 1];            
-    renderPeriodePagination(currentPeriode, periodes);            
-  }            
+  function initKas() {
+    if (window.kasData && Object.keys(window.kasData).length > 0) {            
+      const periodes = Object.keys(window.kasData).sort((a, b) => { 
+        return a.localeCompare(b, undefined, { numeric: true }); 
+      });            
 
-  renderSummaryTable();            
-  renderHistoryList();            
+      currentPeriode = periodes[periodes.length - 1];            
+      renderPeriodePagination(currentPeriode, periodes);            
+      renderSummaryTable();            
+      renderHistoryList();            
 
-  const saldo = summary().net;            
-  const saldoEl = document.getElementById("saldoNow");            
-  saldoEl.textContent = formatRupiah(saldo);            
-  if (saldo < 0) saldoEl.classList.add("negative");            
+      const saldo = summary().net;            
+      const saldoEl = document.getElementById("saldoNow");            
+      saldoEl.textContent = formatRupiah(saldo);            
+      if (saldo < 0) saldoEl.classList.add("negative");            
 
-  const allTransactions = getRawTransactions();            
-  if (allTransactions.length > 0) {            
-    const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];            
-    document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);            
-  } else {            
-    document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";            
-  }            
+      const allTransactions = getRawTransactions();            
+      if (allTransactions.length > 0) {            
+        const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];            
+        document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);            
+      } else {            
+        document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";            
+      }            
+    } else {
+      console.warn("⚠️ kasData belum tersedia saat init.");
+    }
+  }
+
+  if (window.kasData) {
+    initKas();
+  } else {
+    const checkKas = setInterval(() => {
+      if (window.kasData && Object.keys(window.kasData).length > 0) {
+        clearInterval(checkKas);
+        initKas();
+      }
+    }, 500);
+  }
 });
