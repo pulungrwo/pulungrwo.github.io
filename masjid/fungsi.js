@@ -1,4 +1,4 @@
-// =================== Utilitas ===================
+// =================== Utilitas yoman ===================
 // Format angka ke Rupiah            
 function formatRupiah(num) {            
   return "Rp " + num.toLocaleString("id-ID");            
