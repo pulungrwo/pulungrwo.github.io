@@ -115,10 +115,18 @@ receipt: ""
 },
 {
 date: "2025-09-21",
+description: "Alat Kebersihan",
+type: "expense",
+amount: 35000,
+note: "beli sapu lidi dan wiper lantai",
+receipt: ""
+},
+{
+date: "2025-09-21",
 description: "Gotong Royong",
 type: "expense",
-amount: 52500,
-note: "beli alat kebersihan 35.000 + konsumsi 17.500",
+amount: 17500,
+note: "konsumsi bersih2 masjid",
 receipt: ""
 },
   ]
