@@ -111,7 +111,7 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.maxWidth = "80%";
   popup.style.width = "auto"; 
   popup.style.background = "#1e1e2f";
-  popup.style.border = "1px solid rgba(255,255,255,0.1)";
+  popup.style.border = "2px solid rgba(255,255,255,0.1)";
   popup.style.borderRadius = "10px";
   popup.style.padding = "12px";
   popup.style.color = "#fff";
