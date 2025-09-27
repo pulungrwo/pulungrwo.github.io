@@ -107,22 +107,23 @@ function showTransactionPopup(tx, anchorElement) {
   popup.id = "datePopup";
   popup.className = "date-popup";
 
-  // ✅ Lebar konsisten
+  // ✅ gaya konsisten dengan riwayat
   popup.style.maxWidth = "80%";
-  popup.style.width = "auto"; 
-  popup.style.background = "#1e1e2f";
-  popup.style.border = "2px solid rgba(255,255,255,0.1)";
-  popup.style.borderRadius = "10px";
+  popup.style.width = "auto";
+  popup.style.background = "rgba(255,255,255,0.05)";
+  popup.style.border = "1px solid rgba(255,255,255,0.1)";
+  popup.style.borderRadius = "8px";
   popup.style.padding = "12px";
   popup.style.color = "#fff";
-  popup.style.boxShadow = "0 4px 20px rgba(0,0,0,0.4)";
+  popup.style.fontSize = "0.9rem";
+  popup.style.lineHeight = "1.5";
+  popup.style.boxShadow = "0 2px 12px rgba(0,0,0,0.3)";
 
   const header = document.createElement("div");
-  header.className = "popup-header";
   header.style.display = "flex";
   header.style.justifyContent = "space-between";
   header.style.alignItems = "center";
-  header.style.marginBottom = "8px";
+  header.style.marginBottom = "6px";
   header.innerHTML = `<strong>Detail Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
   popup.appendChild(header);
 
@@ -136,15 +137,14 @@ function showTransactionPopup(tx, anchorElement) {
   }
 
   const item = document.createElement("div");
-  item.className = "popup-item";
   item.innerHTML = `
-    <div style="font-weight:bold; margin-bottom:6px;">
+    <div style="font-weight:bold; margin-bottom:4px;">
       ${formatTanggalPanjang(tx.date)} - ${tx.description}
     </div>
-    <div style="margin-bottom:6px; font-size:0.9rem; color: #ccc;">
+    <div style="margin-bottom:6px; color: #bbb;">
       ${tx.note || "-"}
     </div>
-    <div style="font-size:0.9rem; line-height:1.4;">
+    <div>
       <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
       <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
@@ -163,7 +163,7 @@ function showTransactionPopup(tx, anchorElement) {
 
   document.body.appendChild(popup);
 
-  // ✅ posisi tetap seperti semula (dekat cell tabel)
+  // ✅ posisi tetap di dekat cell tabel
   const rect = anchorElement.getBoundingClientRect();
   const top = rect.bottom + window.scrollY + 6;
   let left = rect.left + window.scrollX;
@@ -178,6 +178,7 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.left = `${left}px`;
   popup.style.zIndex = 9999;
 }
+
 
 // =================== Render ===================
 function renderSummaryTable() {
