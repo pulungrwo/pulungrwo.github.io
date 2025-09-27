@@ -105,47 +105,39 @@ function showTransactionPopup(tx, anchorElement) {
 
   const popup = document.createElement("div");
   popup.id = "datePopup";
-  popup.className = "date-popup";
-
-  // ✅ gaya konsisten dengan riwayat
-  popup.style.maxWidth = "80%";
-  popup.style.width = "auto";
-  popup.style.background = "rgba(255,255,255,0.05)";
-  popup.style.border = "1px solid rgba(255,255,255,0.1)";
-  popup.style.borderRadius = "8px";
-  popup.style.padding = "12px";
-  popup.style.color = "#fff";
-  popup.style.fontSize = "0.9rem";
-  popup.style.lineHeight = "1.5";
-  popup.style.boxShadow = "0 2px 12px rgba(0,0,0,0.3)";
+  popup.className = "date-popup history-item"; // ✅ gunakan style history-item
 
   const header = document.createElement("div");
-  header.style.display = "flex";
-  header.style.justifyContent = "space-between";
-  header.style.alignItems = "center";
-  header.style.marginBottom = "6px";
-  header.innerHTML = `<strong>Detail Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
+  header.className = "popup-header";
+  header.innerHTML = `
+    <strong>Detail Transaksi</strong>
+    <span class="close-btn" style="cursor:pointer;">❌</span>
+  `;
   popup.appendChild(header);
 
+  // bukti (opsional)
   let receiptHTML = "";
   if (tx.receipt) {
     receiptHTML = `
       <div style="margin-top:10px;">
-        <img src="${tx.receipt}" alt="Bukti" style="max-width:100%; border-radius:6px; cursor:pointer;">
+        <img src="${tx.receipt}" alt="Bukti" 
+          style="max-width:100%; border-radius:6px; cursor:pointer;">
       </div>
     `;
   }
 
+  // konten isi
   const item = document.createElement("div");
+  item.className = "popup-item";
   item.innerHTML = `
-    <div style="font-weight:bold; margin-bottom:4px;">
+    <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#fff;">
       ${formatTanggalPanjang(tx.date)} - ${tx.description}
     </div>
-    <div style="margin-bottom:6px; color: #bbb;">
-      ${tx.note || "-"}
-    </div>
-    <div>
-      <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
+    <div class="note">${tx.note || "-"}</div>
+    <div class="h-details">
+      <div class="type ${tx.type === "income" ? "income" : "expense"}">
+        ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}
+      </div>
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
       <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
     </div>
@@ -163,7 +155,7 @@ function showTransactionPopup(tx, anchorElement) {
 
   document.body.appendChild(popup);
 
-  // ✅ posisi tetap di dekat cell tabel
+  // ✅ posisi dekat sel tabel
   const rect = anchorElement.getBoundingClientRect();
   const top = rect.bottom + window.scrollY + 6;
   let left = rect.left + window.scrollX;
