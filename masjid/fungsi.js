@@ -38,7 +38,7 @@ let currentPeriode = null;
 
 function getRawTransactions() {
   if (window.kasData && currentPeriode && window.kasData[currentPeriode]) {
-    return window.kasData[currentPeriode];
+    return window.kasData[currentPeriode].transaksi || [];
   }
   console.warn("Tidak ada data kas tersedia atau periode belum dipilih.");
   return [];
@@ -382,9 +382,27 @@ function renderPeriodeFilter(selectedPeriode, periodes) {
     } else {
       document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
     }
+
+    // update periode label
+    const periodeInfo = document.getElementById("periode-info");
+    if (periodeInfo) {
+      periodeInfo.textContent = window.kasData[currentPeriode]?.periode || "";
+    }
   };
 
   container.append(label, select);
+
+  // tambahkan info periode di bawah filter
+  let periodeInfo = document.getElementById("periode-info");
+  if (!periodeInfo) {
+    periodeInfo = document.createElement("div");
+    periodeInfo.id = "periode-info";
+    periodeInfo.style.marginTop = "6px";
+    periodeInfo.style.fontSize = "0.9rem";
+    periodeInfo.style.color = "#ccc";
+    container.appendChild(periodeInfo);
+  }
+  periodeInfo.textContent = window.kasData[selectedPeriode]?.periode || "";
 }
 
 // =================== Init ===================
@@ -412,6 +430,12 @@ document.addEventListener("DOMContentLoaded", () => {
           "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
       } else {
         document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
+      }
+
+      // tampilkan periode saat init
+      const periodeInfo = document.getElementById("periode-info");
+      if (periodeInfo) {
+        periodeInfo.textContent = window.kasData[currentPeriode]?.periode || "";
       }
     } else {
       console.warn("⚠️ kasData belum tersedia saat init.");
