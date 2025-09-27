@@ -2,28 +2,7 @@
 // Penyimpanan data arus kas per tahun Hijriah  
 
 window.kasData = {  
-  "1448H": {  
-    periode: "Maret 2026 – Maret 2027",  
-    bendahara: "Pulung Riswanto",  
-    transaksi: [  
-      {  
-        date: "2025-09-27",  
-        description: "Sumbangan",  
-        type: "income",  
-        amount: 15000,  
-        note: "hahahahahahahahahaha",  
-        receipt: ""  
-      },  
-      {  
-        date: "2025-09-28",  
-        description: "nemu",  
-        type: "income",  
-        amount: 10000,  
-        note: "hehehe",  
-        receipt: ""  
-      }  
-    ]  
-  },  
+  
 
   "1447H": {  
     periode: "Maret 2025 – Maret 2026",  
