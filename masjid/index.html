@@ -7,38 +7,8 @@
   <link rel="stylesheet" href="/masjid/gaya.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <title>Kas Masjid Al-Huda Online | Tanjung Bulan Squad</title>
-  <style>
-    .pagination-wrapper {
-      margin: 2em 0;
-      text-align: center;
-    }
-    .pagination-wrapper button {
-      margin: 0 5px;
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      background: #f8f8f8;
-      color: #333;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .pagination-wrapper button.active {
-      background: #007bff;
-      color: #fff;
-      border-color: #007bff;
-    }
-    /* filter periode */
-    #periode-filter {
-      margin: 15px 0;
-    }
-    #periode-filter label {
-      font-weight: bold;
-      margin-right: 6px;
-    }
-    #periode-filter select {
-      padding: 4px 8px;
-      border-radius: 5px;
-    }
-  </style>
+  
+      
 </head><body class="bg-dark text-light">
   <div class="col-lg-3 d-flex flex-column align-items-center justify-content-center border-custom py-4">
     <div class="d-block border-light border border-2 rounded-circle overflow-hidden" style="width: 8em;"
@@ -75,9 +45,14 @@
   </script> 
 
 <center>
+
+
+<!-- Filter Periode -->
+  <div id="periode-filter"></div><br/>
+
   <div class="saldo-wrapper">
     <div class="saldo-card">
-      <div class="saldo-label">Saldo Saat Ini</div>
+      <div class="saldo-label">Saldo</div>
       <div id="saldoNow" class="saldo-amount">Rp 0</div>
     </div>
   </div>
@@ -85,8 +60,7 @@
 
   <hr>
 
-  <!-- Filter Periode -->
-  <div id="periode-filter"></div>
+  
 
   <h2>Arus Kas</h2>
   <p class="sub">Klik Uang Masuk/Keluar untuk melihat detail transaksi.</p>
