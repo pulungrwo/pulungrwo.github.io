@@ -97,6 +97,7 @@ function showImageModal(src) {
   document.body.appendChild(overlay);
 }
 
+
 function showTransactionPopup(tx, anchorElement) {
   const existing = document.getElementById("datePopup");
   if (existing) existing.remove();
@@ -105,31 +106,50 @@ function showTransactionPopup(tx, anchorElement) {
   popup.id = "datePopup";
   popup.className = "date-popup";
 
+  // ✅ styling agar lebar sama (max 80%)
+  popup.style.position = "fixed";
+  popup.style.left = "50%";
+  popup.style.top = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.width = "80%";
+  popup.style.maxWidth = "500px";
+  popup.style.background = "#1e1e2f";
+  popup.style.border = "1px solid rgba(255,255,255,0.1)";
+  popup.style.borderRadius = "12px";
+  popup.style.padding = "16px";
+  popup.style.zIndex = 9999;
+  popup.style.boxShadow = "0 0 25px rgba(0,0,0,0.6)";
+  popup.style.color = "#fff";
+
   const header = document.createElement("div");
   header.className = "popup-header";
+  header.style.display = "flex";
+  header.style.justifyContent = "space-between";
+  header.style.alignItems = "center";
+  header.style.marginBottom = "10px";
   header.innerHTML = `<strong>Detail Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
   popup.appendChild(header);
 
   let receiptHTML = "";
   if (tx.receipt) {
     receiptHTML = `
-      <div style="margin-top:8px;">
-        <img src="${tx.receipt}" alt="Bukti" style="max-width:100px;cursor:pointer;border-radius:6px;">
+      <div style="margin-top:12px; text-align:center;">
+        <img src="${tx.receipt}" alt="Bukti" style="max-width:100%; border-radius:6px; cursor:pointer;">
       </div>
     `;
   }
 
   const item = document.createElement("div");
   item.className = "popup-item";
-  item.style.padding = "10px 0";
+  item.style.fontSize = "0.95rem";
   item.innerHTML = `
-    <div style="font-weight:bold; margin-bottom:6px;">
+    <div style="font-weight:bold; margin-bottom:8px;">
       ${formatTanggalPanjang(tx.date)} - ${tx.description}
     </div>
-    <div style="margin-bottom:6px; font-size:0.9rem; color: var(--muted);">
+    <div style="margin-bottom:8px; font-size:0.9rem; color: #ccc;">
       ${tx.note || "-"}
     </div>
-    <div style="font-size:0.9rem; color: var(--muted);">
+    <div style="font-size:0.9rem; line-height:1.4;">
       <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
       <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
@@ -147,13 +167,8 @@ function showTransactionPopup(tx, anchorElement) {
   if (closeBtn) closeBtn.addEventListener("click", () => popup.remove());
 
   document.body.appendChild(popup);
-
-  const rect = anchorElement.getBoundingClientRect();
-  popup.style.position = "absolute";
-  popup.style.top = `${rect.bottom + window.scrollY + 6}px`;
-  popup.style.left = `${rect.left + window.scrollX}px`;
-  popup.style.zIndex = 9999;
 }
+
 
 // =================== Render ===================
 function renderSummaryTable() {
