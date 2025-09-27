@@ -36,6 +36,19 @@ function populateChecklist() {
   checklist.appendChild(document.createElement("br"));  
   checklist.appendChild(document.createElement("hr"));  
 
+  // 🆕 Tambahkan tombol pilih semua  
+  const selectAllBtn = document.createElement("button");  
+  selectAllBtn.textContent = "Pilih Semua Transaksi";  
+  selectAllBtn.style.margin = "6px 0";  
+  selectAllBtn.onclick = () => {  
+    const checkboxes = checklist.querySelectorAll("input[type=checkbox]");  
+    checkboxes.forEach(cb => {  
+      if (cb.id !== "usePrevSaldo") cb.checked = true;  
+    });  
+  };  
+  checklist.appendChild(selectAllBtn);  
+  checklist.appendChild(document.createElement("hr"));  
+
   // Daftar transaksi  
   txs.forEach((t, i) => {  
     const label = document.createElement("label");  
