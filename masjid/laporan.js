@@ -2,6 +2,9 @@ const periodeSelect = document.getElementById("periode");
 const checklist = document.getElementById("checklist");
 const output = document.getElementById("reportOutput");
 
+// 🆕 Checkbox toggle gunakan saldo periode sebelumnya
+let usePreviousSaldo = false;
+
 function populatePeriodeOptions() {
   const periodeKeys = Object.keys(kas.raw);
   periodeSelect.innerHTML = "";
@@ -17,6 +20,23 @@ function populateChecklist() {
   const periode = periodeSelect.value;
   const txs = kas.raw[periode] || [];
   checklist.innerHTML = "";
+
+  // 🆕 Tambahkan checkbox kontrol saldo
+  const saldoLabel = document.createElement("label");
+  const saldoCheckbox = document.createElement("input");
+  saldoCheckbox.type = "checkbox";
+  saldoCheckbox.id = "usePrevSaldo";
+  saldoCheckbox.checked = usePreviousSaldo;
+  saldoCheckbox.addEventListener("change", () => {
+    usePreviousSaldo = saldoCheckbox.checked;
+  });
+  saldoLabel.appendChild(saldoCheckbox);
+  saldoLabel.append(" Gunakan saldo periode sebelumnya");
+  checklist.appendChild(saldoLabel);
+  checklist.appendChild(document.createElement("br"));
+  checklist.appendChild(document.createElement("hr"));
+
+  // Daftar transaksi
   txs.forEach((t, i) => {
     const label = document.createElement("label");
     const checkbox = document.createElement("input");
@@ -33,7 +53,8 @@ function generateReport() {
   const periode = periodeSelect.value;
   const txs = kas.raw[periode] || [];
 
-  const checked = Array.from(checklist.querySelectorAll("input:checked"))
+  const checked = Array.from(checklist.querySelectorAll("input[type=checkbox]:checked"))
+    .filter(cb => cb.id !== "usePrevSaldo") // abaikan checkbox saldo
     .map(cb => parseInt(cb.value));
 
   if (checked.length === 0) {
@@ -48,21 +69,30 @@ function generateReport() {
   const startDate = new Date(sortedSelected[0].date);
   const endDate = new Date(sortedSelected.at(-1).date);
 
-  // Ambil semua transaksi dari tahun-tahun sebelumnya
-  const allYears = Object.keys(kas.raw).sort();
-  const currentIndex = allYears.indexOf(periode);
   let saldoAwal = 0;
 
-  for (let i = 0; i < currentIndex; i++) {
-    const txsSebelumnya = kas.raw[allYears[i]];
-    saldoAwal += txsSebelumnya.reduce((s, t) =>
-      s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
-  }
+  if (usePreviousSaldo) {
+    // ✅ Gunakan periode sebelumnya
+    const allYears = Object.keys(kas.raw).sort();
+    const currentIndex = allYears.indexOf(periode);
 
-  saldoAwal += txs
-    .filter(t => new Date(t.date) < startDate)
-    .reduce((s, t) =>
-      s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
+    for (let i = 0; i < currentIndex; i++) {
+      const txsSebelumnya = kas.raw[allYears[i]];
+      saldoAwal += txsSebelumnya.reduce((s, t) =>
+        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
+    }
+
+    saldoAwal += txs
+      .filter(t => new Date(t.date) < startDate)
+      .reduce((s, t) =>
+        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
+  } else {
+    // ✅ Hanya saldo dari periode terpilih
+    saldoAwal = txs
+      .filter(t => new Date(t.date) < startDate)
+      .reduce((s, t) =>
+        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
+  }
 
   // Kelompokkan transaksi berdasarkan deskripsi
   function groupByDescription(arr) {
@@ -91,7 +121,6 @@ function generateReport() {
   const endMonthYear = formatMonthYear(endDate);
 
   const lines = [];
-  // 🆕 Tentukan judul sesuai periode
   if (startMonthYear === endMonthYear) {
     lines.push(`*📢 Laporan Bulanan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear}`);
@@ -100,7 +129,6 @@ function generateReport() {
     lines.push(`📅 ${startMonthYear} - ${endMonthYear}`);
   }
 
-  // 🆕 Garis pemisah
   lines.push(`-------------------------`);
 
   lines.push(`\n💰 *Saldo Awal:* *${saldoAwal.toLocaleString("id-ID")}*`);
