@@ -97,15 +97,14 @@ function showImageModal(src) {
   document.body.appendChild(overlay);
 }
 
-
-// Popup Transaksi 
+// =================== Popup Transaksi ===================
 function showTransactionPopup(tx, anchorElement) {
   const existing = document.getElementById("datePopup");
   if (existing) existing.remove();
 
   const popup = document.createElement("div");
   popup.id = "datePopup";
-  popup.className = "date-popup history-item"; // ✅ gunakan style history-item
+  popup.className = "date-popup history-item";
 
   const header = document.createElement("div");
   header.className = "popup-header";
@@ -134,12 +133,12 @@ function showTransactionPopup(tx, anchorElement) {
       ${formatTanggalPanjang(tx.date)} - ${tx.description}
     </div>
     <div class="note">${tx.note || "-"}</div>
-    <div class="h-details">
+    <div class="h-details" style="flex-direction:column;gap:4px;">
       <div class="type ${tx.type === "income" ? "income" : "expense"}">
         ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}
       </div>
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
-      <div><strong>Saldo Setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
+      <div><strong>Sisa Saldo:</strong> ${formatRupiah(tx.balanceAfter)}</div>
     </div>
     ${receiptHTML}
   `;
@@ -155,7 +154,7 @@ function showTransactionPopup(tx, anchorElement) {
 
   document.body.appendChild(popup);
 
-  // ✅ posisi dekat sel tabel
+  // posisi dekat sel tabel
   const rect = anchorElement.getBoundingClientRect();
   const top = rect.bottom + window.scrollY + 6;
   let left = rect.left + window.scrollX;
@@ -170,7 +169,6 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.left = `${left}px`;
   popup.style.zIndex = 9999;
 }
-
 
 // =================== Render ===================
 function renderSummaryTable() {
@@ -261,10 +259,14 @@ function renderHistoryList(page = 1, doScroll = false) {
 
     const detail = document.createElement("div");
     detail.className = "h-details";
+    detail.style.flexDirection = "column";
+    detail.style.gap = "4px";
     detail.innerHTML = `
-      <div><strong>Tipe:</strong> ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}</div>
+      <div class="type ${tx.type === "income" ? "income" : "expense"}">
+        ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}
+      </div>
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
-      <div><strong>Saldo setelah:</strong> ${formatRupiah(tx.balanceAfter)}</div>
+      <div><strong>Sisa Saldo:</strong> ${formatRupiah(tx.balanceAfter)}</div>
     `;
 
     wrapper.append(header, noteDiv, detail);
