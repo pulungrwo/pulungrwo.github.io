@@ -129,11 +129,14 @@ function showTransactionPopup(tx, anchorElement) {
   const item = document.createElement("div");
   item.className = "popup-item";
   item.innerHTML = `
-    <div style="font-size:1.05rem; font-weight:600; margin-bottom:6px; color:#fff;">
-      ${formatTanggalPanjang(tx.date)} - ${tx.description}
+    <div style="font-size:0.8rem; color:#aaa; margin-bottom:4px;">
+      ${formatTanggalPanjang(tx.date)}
+    </div>
+    <div style="font-size:1rem; font-weight:600; margin-bottom:6px; color:#fff;">
+      ${tx.description}
     </div>
     <div class="note">${tx.note || "-"}</div>
-    <div class="h-details" style="flex-direction:column;gap:4px;">
+    <div class="h-details" style="flex-direction:column;gap:6px;margin-top:8px;">
       <div class="type ${tx.type === "income" ? "income" : "expense"}">
         ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}
       </div>
@@ -250,8 +253,17 @@ function renderHistoryList(page = 1, doScroll = false) {
     wrapper.className = "history-item";
 
     const header = document.createElement("div");
-    header.style.marginBottom = "6px";
-    header.innerHTML = `<strong>${formatTanggalPanjang(tx.date)}</strong> - ${tx.description}`;
+    header.style.fontSize = "0.8rem";
+    header.style.color = "#aaa";
+    header.style.marginBottom = "4px";
+    header.textContent = formatTanggalPanjang(tx.date);
+
+    const title = document.createElement("div");
+    title.style.fontSize = "1rem";
+    title.style.fontWeight = "600";
+    title.style.marginBottom = "6px";
+    title.style.color = "#fff";
+    title.textContent = tx.description;
 
     const noteDiv = document.createElement("div");
     noteDiv.className = "note";
@@ -260,7 +272,8 @@ function renderHistoryList(page = 1, doScroll = false) {
     const detail = document.createElement("div");
     detail.className = "h-details";
     detail.style.flexDirection = "column";
-    detail.style.gap = "4px";
+    detail.style.gap = "6px";
+    detail.style.marginTop = "8px";
     detail.innerHTML = `
       <div class="type ${tx.type === "income" ? "income" : "expense"}">
         ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"}
@@ -269,7 +282,7 @@ function renderHistoryList(page = 1, doScroll = false) {
       <div><strong>Sisa Saldo:</strong> ${formatRupiah(tx.balanceAfter)}</div>
     `;
 
-    wrapper.append(header, noteDiv, detail);
+    wrapper.append(header, title, noteDiv, detail);
 
     if (tx.receipt) {
       const img = document.createElement("img");
