@@ -98,6 +98,7 @@ function showImageModal(src) {
 }
 
 
+// Popup Transaksi 
 function showTransactionPopup(tx, anchorElement) {
   const existing = document.getElementById("datePopup");
   if (existing) existing.remove();
@@ -106,34 +107,29 @@ function showTransactionPopup(tx, anchorElement) {
   popup.id = "datePopup";
   popup.className = "date-popup";
 
-  // ✅ styling agar lebar sama (max 80%)
-  popup.style.position = "fixed";
-  popup.style.left = "50%";
-  popup.style.top = "50%";
-  popup.style.transform = "translate(-50%, -50%)";
-  popup.style.width = "80%";
-  popup.style.maxWidth = "500px";
+  // ✅ Lebar konsisten
+  popup.style.maxWidth = "80%";
+  popup.style.width = "auto"; 
   popup.style.background = "#1e1e2f";
   popup.style.border = "1px solid rgba(255,255,255,0.1)";
-  popup.style.borderRadius = "12px";
-  popup.style.padding = "16px";
-  popup.style.zIndex = 9999;
-  popup.style.boxShadow = "0 0 25px rgba(0,0,0,0.6)";
+  popup.style.borderRadius = "10px";
+  popup.style.padding = "12px";
   popup.style.color = "#fff";
+  popup.style.boxShadow = "0 4px 20px rgba(0,0,0,0.4)";
 
   const header = document.createElement("div");
   header.className = "popup-header";
   header.style.display = "flex";
   header.style.justifyContent = "space-between";
   header.style.alignItems = "center";
-  header.style.marginBottom = "10px";
+  header.style.marginBottom = "8px";
   header.innerHTML = `<strong>Detail Transaksi</strong> <span class="close-btn" style="cursor:pointer;">❌</span>`;
   popup.appendChild(header);
 
   let receiptHTML = "";
   if (tx.receipt) {
     receiptHTML = `
-      <div style="margin-top:12px; text-align:center;">
+      <div style="margin-top:10px;">
         <img src="${tx.receipt}" alt="Bukti" style="max-width:100%; border-radius:6px; cursor:pointer;">
       </div>
     `;
@@ -141,12 +137,11 @@ function showTransactionPopup(tx, anchorElement) {
 
   const item = document.createElement("div");
   item.className = "popup-item";
-  item.style.fontSize = "0.95rem";
   item.innerHTML = `
-    <div style="font-weight:bold; margin-bottom:8px;">
+    <div style="font-weight:bold; margin-bottom:6px;">
       ${formatTanggalPanjang(tx.date)} - ${tx.description}
     </div>
-    <div style="margin-bottom:8px; font-size:0.9rem; color: #ccc;">
+    <div style="margin-bottom:6px; font-size:0.9rem; color: #ccc;">
       ${tx.note || "-"}
     </div>
     <div style="font-size:0.9rem; line-height:1.4;">
@@ -167,8 +162,22 @@ function showTransactionPopup(tx, anchorElement) {
   if (closeBtn) closeBtn.addEventListener("click", () => popup.remove());
 
   document.body.appendChild(popup);
-}
 
+  // ✅ posisi tetap seperti semula (dekat cell tabel)
+  const rect = anchorElement.getBoundingClientRect();
+  const top = rect.bottom + window.scrollY + 6;
+  let left = rect.left + window.scrollX;
+
+  const popupRect = popup.getBoundingClientRect();
+  if (left + popupRect.width > window.innerWidth - 10) {
+    left = window.innerWidth - popupRect.width - 10;
+  }
+
+  popup.style.position = "absolute";
+  popup.style.top = `${top}px`;
+  popup.style.left = `${left}px`;
+  popup.style.zIndex = 9999;
+}
 
 // =================== Render ===================
 function renderSummaryTable() {
