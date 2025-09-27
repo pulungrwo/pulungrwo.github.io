@@ -552,3 +552,35 @@ h1, h2 {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.pagination-wrapper {
+      margin: 2em 0;
+      text-align: center;
+    }
+    .pagination-wrapper button {
+      margin: 0 5px;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      color: #333;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .pagination-wrapper button.active {
+      background: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+
+/* filter periode */
+    #periode-filter {
+      margin: 15px 0;
+    }
+    #periode-filter label {
+      font-weight: bold;
+      margin-right: 6px;
+    }
+    #periode-filter select {
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
