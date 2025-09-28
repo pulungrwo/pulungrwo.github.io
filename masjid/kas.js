@@ -5,7 +5,7 @@ window.kasData = {
   
 
   "1447H": {  
-    periode: "Maret 2025 – Maret 2026",  
+    periode: "Agustus 2025 – Maret 2026",  
     bendahara: "Pulung Riswanto",  
     transaksi: [  
       {  
