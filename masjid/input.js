@@ -63,8 +63,9 @@ function generateCode() {
   type: "${type}",
   amount: ${amount},
   note: "${note}",
-  video: "${video}",
-  foto: "${foto}"
+  foto: "${foto}",
+  video: "${video}"
+  
 },`;
 
   const resultDiv = document.getElementById("result");
