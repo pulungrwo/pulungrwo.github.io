@@ -158,7 +158,18 @@ window.kasData = {
         note: "",  
         video: "",  
         foto: ""  
-      }  
+      },
+{
+date: "2025-09-28",
+description: "Pengajian Annisa",
+type: "expense",
+amount: 400000,
+note: "Uang amplop penceramah pengajian annisa di tanjung bulan",
+foto: "",
+video: ""
+
+},
+
     ]  
   }  
 };  
