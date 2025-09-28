@@ -128,7 +128,7 @@ window.kasData = {
         description: "Konsumsi Rapat",  
         type: "expense",  
         amount: 53000,  
-        note: "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian An-Nisa",  
+        note: "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian Annisa",  
         video: "",  
         foto: ""  
       },  
@@ -161,12 +161,12 @@ window.kasData = {
       },
 {
 date: "2025-09-28",
-description: "Pengajian An-nisa",
+description: "Pengajian Annisa",
 type: "expense",
 amount: 400000,
 note: "Uang amplop penceramah pengajian annisa di tanjung bulan",
 foto: "",
-video: ""
+video: "https://vt.tiktok.com/ZSDtkmYgy/"
 
 },
 
