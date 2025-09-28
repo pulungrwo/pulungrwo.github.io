@@ -161,7 +161,7 @@ window.kasData = {
       },
 {
 date: "2025-09-28",
-description: "Pengajian Annisa",
+description: "Pengajian An-nisa",
 type: "expense",
 amount: 400000,
 note: "Uang amplop penceramah pengajian annisa di tanjung bulan",
