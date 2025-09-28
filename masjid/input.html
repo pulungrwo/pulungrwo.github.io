@@ -2,291 +2,164 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.1.1/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" /> -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/73db2f45cc.js" crossorigin="anonymous"></script>
 
-<script src="https://kit.fontawesome.com/73db2f45cc.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #f5f5f5;
+      padding: 20px;
+    }
 
+    h2 {
+      color: #ffffff;
+      text-align: center;
+    }
 
-<style>
+    .form-container,
+    .output-container {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      margin: 20px auto;
+    }
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #121212;
-  color: #f5f5f5;
-  padding: 20px;
-}
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #e0e0e0;
+    }
 
-h2 {
-  color: #ffffff;
-  text-align: center;
-}
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 8px;
+    }
 
-.form-container, .output-container {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  max-width: 600px;
-  margin: 20px auto;
-}
+    input::placeholder,
+    textarea::placeholder {
+      color: #aaa;
+    }
 
-label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-  color: #e0e0e0;
-}
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-  color: #fff;
-  border-radius: 8px;
-}
+    button:hover {
+      background-color: #43a047;
+    }
 
-input::placeholder,
-textarea::placeholder {
-  color: #aaa;
-}
+    pre {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: #e0e0e0;
+      font-family: Consolas, monospace;
+    }
 
-button {
-  margin-top: 15px;
-  padding: 12px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    .copied {
+      color: #81c784;
+      font-size: 0.9em;
+      margin-left: 10px;
+    }
 
-button:hover {
-  background-color: #43a047;
-}
+    #previewVideoLink {
+      display: inline-block;
+      margin-top: 10px;
+      color: #4ade80;
+      font-weight: 600;
+      text-decoration: none;
+    }
 
-pre {
-  background: #2a2a2a;
-  padding: 15px;
-  border-radius: 8px;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  color: #e0e0e0;
-  font-family: Consolas, monospace;
-}
+    #previewVideoLink:hover {
+      text-decoration: underline;
+    }
+  </style>
 
-.copied {
-  color: #81c784;
-  font-size: 0.9em;
-  margin-left: 10px;
-}
-</style>
+  <link rel="stylesheet" href="/masjid/gaya.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-
-   <link rel="stylesheet" href="/masjid/gaya.css">
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
-
-    <title>input Kas Masjid Al-Huda Tanjung Bulan</title>
+  <title>Input Kas Masjid Al-Huda Tanjung Bulan</title>
 </head>
 
+<body class="bg-dark text-light">
 
-    <body class="bg-dark text-light">
+  <h2>Input Kas Masjid Al-Huda</h2>
 
+  <div class="form-container">
+    <label for="tanggal">Tanggal:</label>
+    <input type="date" id="tanggal">
 
-                <div class="col-lg-3 d-flex flex-column align-items-center justify-content-center border-custom py-4">
+    <label for="description">Keterangan</label>
+    <input type="text" id="description" placeholder="Contoh: infak jumat">
 
+    <label for="type">Jenis</label>
+    <select id="type">
+      <option value="income">Pemasukan</option>
+      <option value="expense">Pengeluaran</option>
+    </select>
 
+    <label for="amount">Jumlah (angka saja):
+      <button type="button" onclick="tambahNol()">+000</button>
+    </label>
+    <input type="number" id="amount" placeholder="Contoh: 20000">
 
-        <div class="d-block border-light border border-2 rounded-circle overflow-hidden" style="width: 8em;"
-                data-bs-toggle="modal" data-bs-target="#showImage" id="profile">
+    <label for="note">Catatan Tambahan</label>
+    <textarea id="note" placeholder="Opsional, bisa dikosongkan"></textarea>
 
-                <img class="img-fluid">
-            </div>
-            <span class="pt-3 text-center">
+    <label for="foto">Link Foto Bukti</label>
+    <input type="url" id="foto" placeholder="Contoh: https://example.com/bukti.jpg">
 
-                 <h1><i class="fas fa-wallet">
+    <label for="video">Link Video Dokumentasi</label>
+    <input type="url" id="video" placeholder="Contoh: https://youtube.com/...">
 
-    </i>Input Kas Masjid</h1>
+    <button onclick="generateCode()">Buat & Tampilkan Kode</button>
 
-            </span>
-
-
-
-       </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="showImage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="showImageLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="showImageLabel">RISMA Tanjung Bulan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <img class="img-fluid img-thumbnail profile">
-                </div>
-            </div>
-        </div>
-    </div> 
-
-    <script>
-        // * img position
-        const position = '/img/risma_1.png';
-
-        // ! Don't change this line
-        $(document).ready(() => {
-            $('#profile img').attr('src', position);
-        });
-    </script>
-
-    <center>
-
-
-<!--
-    <script>
-        // list links
-        const links = [
-            
-            
-            {
-
-                url: 'jadwal.html',
-                icon: 'fas fa-calendar-alt',
-                text: 'Jadwal Pertandingan',
-            },
-           
-            
-            {
-
-                url: 'hasil.html',
-                icon: 'fas fa-hourglass-end',
-                text: 'Hasil Pertandingan',
-            },
-
-            
-           
-        ];
-
-        // ! Don't change this line
-        $(document).ready(() => {
-            const callbackMap = (element, i) => {
-                return  /*html*/`
-                <li class="my-3 py-3 px-5 border border-light">
-                    <a target="" href="${element.url}" class="text-decoration-none"
-                        style="font-weight: 450;">
-                        <i class="fa-fw ${element.icon}"></i>
-                        ${element.text}
-                    </a>
-                </li>
-                `;
-            };
-            $('.list-unstyled.links').append($.map(links, callbackMap));
-        });
-    </script>
-
- -->
-
-
-
-
-
-
-    </center>
-
-
-    <script>
-        $(document).ready(() => {
-            $('#profile').on('click', () => {
-                $('img.img-fluid.profile').attr('src',
-                    $('#profile img').attr('src')
-                );
-            })
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
-        crossorigin="anonymous"></script>
-
-
-
-
-        <center>
-
-
-
-<p id="last-updated" style="font-style: italic; font-size: 14px;"></p>
-
-<script>
-  const updatedAt = new Date(document.lastModified);
-  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' };
-  document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + updatedAt.toLocaleDateString('id-ID', options);
-</script>
-
-
-
-
-<h2>Input Kas Masjid Al-Huda</h2>
-
-<div class="form-container">
-  <label for="tanggal">Tanggal:</label>
-  <input type="date" id="tanggal">
-
-  <label for="description">Keterangan</label>
-  <input type="text" id="description" placeholder="Contoh: infak jumat">
-
-  <label for="type">Jenis</label>
-  <select id="type">
-    <option value="income">Pemasukan</option>
-    <option value="expense">Pengeluaran</option>
-  </select>
-
-  <label for="amount">Jumlah (angka saja): 
-    <button type="button" onclick="tambahNol()">+000</button>
-  </label>
-  <input type="number" id="amount" placeholder="Contoh: 20000">
-
-  <label for="note">Catatan Tambahan</label>
-  <textarea id="note" placeholder="Opsional, bisa dikosongkan"></textarea>
-
-  <label for="receipt">Link Foto Bukti</label>
-  <input type="url" id="receipt" placeholder="Contoh: https://example.com/bukti.jpg">
-
-  <button onclick="generateCode()">Buat & Tampilkan Kode</button>
-
-  <!-- Preview hasil input -->
-  <div id="preview" style="display:none; margin-top:15px; padding:10px; border:1px solid #555; border-radius:8px;">
-    <p><strong>Tanggal:</strong> <span id="previewDate"></span></p>
-    <p><strong>Keterangan:</strong> <span id="previewDesc"></span></p>
-    <p><strong>Jenis:</strong> <span id="previewType"></span></p>
-    <p><strong>Jumlah:</strong> Rp <span id="previewAmount"></span></p>
-    <p><strong>Catatan:</strong> <span id="previewNote"></span></p>
-    <div id="previewImageContainer" style="display:none; margin-top:10px;">
-      <img id="previewImage" src="" alt="Bukti Foto" style="max-width:100%; border-radius:8px;">
+    <!-- Preview hasil input -->
+    <div id="preview" style="display:none; margin-top:15px; padding:10px; border:1px solid #555; border-radius:8px;">
+      <p><strong>Tanggal:</strong> <span id="previewDate"></span></p>
+      <p><strong>Keterangan:</strong> <span id="previewDesc"></span></p>
+      <p><strong>Jenis:</strong> <span id="previewType"></span></p>
+      <p><strong>Jumlah:</strong> Rp <span id="previewAmount"></span></p>
+      <p><strong>Catatan:</strong> <span id="previewNote"></span></p>
+      <div id="previewImageContainer" style="display:none; margin-top:10px;">
+        <img id="previewImage" src="" alt="Bukti Foto" style="max-width:100%; border-radius:8px;">
+      </div>
+      <a id="previewVideoLink" href="#" target="_blank" style="display:none;">
+        ▶️ Tonton Video Dokumentasi
+      </a>
     </div>
+
+    <div id="result" class="result-container" style="display:none; margin-top:10px;"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" style="display:none;">Salin Kode</button>
   </div>
 
-  <div id="result" class="result-container" style="display:none; margin-top:10px;"></div>
-  <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" style="display:none;">Salin Kode</button>
-</div>
+  <script src="input.js"></script>
+</body>
 
-<script src="input.js"></script>
-
-
-
-    </body>
-
-  </html>
+</html>
