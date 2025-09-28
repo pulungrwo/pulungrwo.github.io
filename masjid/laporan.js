@@ -176,10 +176,15 @@ function generateReport() {
     lines.push(`\n🎥 *Konten Video Dokumentasi*`);
     lines.push(`-----------`);
     videoTxs.forEach(t => {
-      // hapus prefix agar klik-able di WA
       const cleanLink = t.video.replace(/^https?:\/\//, "");
-      lines.push(`▶️ *${t.description}* - ${t.date}`);
+      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      lines.push(`▶️ *${t.description}*`);
       lines.push(`${cleanLink}`);
+      lines.push(`${humanDate}`);
       lines.push(`-----------`);
     });
   }
