@@ -18,7 +18,8 @@ function generateCode() {
   const amount = parseInt(document.getElementById("amount").value);
   const note = document.getElementById("note").value.trim();
   const dateInput = document.getElementById("tanggal").value;
-  const receipt = document.getElementById("receipt").value.trim();
+  const foto = document.getElementById("foto").value.trim();
+  const video = document.getElementById("video").value.trim();
 
   if (!description || isNaN(amount) || !dateInput) {
     alert("Mohon isi tanggal, keterangan, dan jumlah dengan benar.");
@@ -31,26 +32,39 @@ function generateCode() {
   // Tampilkan preview
   document.getElementById("previewDate").innerText = formattedDate;
   document.getElementById("previewDesc").innerText = description;
-  document.getElementById("previewType").innerText = type === "income" ? "Pemasukan" : "Pengeluaran";
-  document.getElementById("previewAmount").innerText = amount.toLocaleString();
+  document.getElementById("previewType").innerText =
+    type === "income" ? "Pemasukan" : "Pengeluaran";
+  document.getElementById("previewAmount").innerText =
+    amount.toLocaleString("id-ID");
   document.getElementById("previewNote").innerText = note || "-";
 
-  if (receipt) {
-    document.getElementById("previewImage").src = receipt;
+  if (foto) {
+    document.getElementById("previewImage").src = foto;
     document.getElementById("previewImageContainer").style.display = "block";
   } else {
     document.getElementById("previewImageContainer").style.display = "none";
   }
+
+  if (video) {
+    const videoLink = document.getElementById("previewVideoLink");
+    videoLink.href = video;
+    videoLink.style.display = "inline-block";
+  } else {
+    const videoLink = document.getElementById("previewVideoLink");
+    videoLink.style.display = "none";
+  }
+
   document.getElementById("preview").style.display = "block";
 
-  // Kode untuk disalin
+  // Kode untuk disalin (sesuai kas.js terbaru)
   const output = `{
   date: "${formattedDate}",
   description: "${description}",
   type: "${type}",
   amount: ${amount},
   note: "${note}",
-  receipt: "${receipt}"
+  video: "${video}",
+  foto: "${foto}"
 },`;
 
   const resultDiv = document.getElementById("result");
