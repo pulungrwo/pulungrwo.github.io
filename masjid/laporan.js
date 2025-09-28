@@ -170,6 +170,9 @@ function generateReport() {
 
   lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
 
+
+  lines.push(`-------------------------`);
+
   // 🆕 Tambahkan daftar video dokumentasi jika ada
   const videoTxs = sortedSelected.filter(t => t.video);
   if (videoTxs.length > 0) {
