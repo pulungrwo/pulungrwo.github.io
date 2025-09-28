@@ -135,7 +135,7 @@ function showTransactionPopup(tx, anchorElement) {
                   padding:6px 10px;border-radius:6px;
                   background:rgba(255,255,255,0.1);color:#4cc9f0;
                   font-weight:500;text-decoration:none;">
-          📹 Tonton Video Dokumentasi
+          ▶️ Tonton Video Dokumentasi
         </a>
       </div>
     `;
@@ -319,7 +319,7 @@ function renderHistoryList(page = 1, doScroll = false) {
       const videoLink = document.createElement("a");
       videoLink.href = tx.video;
       videoLink.target = "_blank";
-      videoLink.innerHTML = "📹 Tonton Video Dokumentasi";
+      videoLink.innerHTML = "▶️ Tonton Video Dokumentasi";
       videoLink.style.display = "inline-flex";
       videoLink.style.alignItems = "center";
       videoLink.style.gap = "6px";
