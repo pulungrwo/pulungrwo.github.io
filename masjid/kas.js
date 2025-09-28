@@ -147,7 +147,7 @@ window.kasData = {
         type: "expense",  
         amount: 17500,  
         note: "konsumsi bersih2 masjid",  
-        video: "",  
+        video: "https://vt.tiktok.com/ZSDGbd7hX/",  
         foto: ""  
       },  
       {  
