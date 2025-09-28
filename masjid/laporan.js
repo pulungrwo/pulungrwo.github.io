@@ -173,7 +173,7 @@ function generateReport() {
   // 🆕 Tambahkan daftar video dokumentasi jika ada
   const videoTxs = sortedSelected.filter(t => t.video);
   if (videoTxs.length > 0) {
-    lines.push(`\n🎥 *Konten Video Dokumentasi*`);
+    lines.push(`\n🎥 _Konten Video Dokumentasi_`);
     lines.push(`-----------`);
     videoTxs.forEach(t => {
       const cleanLink = t.video.replace(/^https?:\/\//, "");
