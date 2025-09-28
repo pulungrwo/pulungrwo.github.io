@@ -65,7 +65,7 @@ function summary() {
   return { income, expense, net: income - expense };
 }
 
-// =================== Modal & Popup ===================
+// =================== Modal Gambar ===================
 function showImageModal(src) {
   const existing = document.getElementById("imageModal");
   if (existing) existing.remove();
@@ -114,13 +114,29 @@ function showTransactionPopup(tx, anchorElement) {
   `;
   popup.appendChild(header);
 
-  // bukti (opsional)
-  let receiptHTML = "";
-  if (tx.receipt) {
-    receiptHTML = `
+  // foto (opsional)
+  let fotoHTML = "";
+  if (tx.foto) {
+    fotoHTML = `
       <div style="margin-top:10px;">
-        <img src="${tx.receipt}" alt="Bukti" 
+        <img src="${tx.foto}" alt="Bukti"
           style="max-width:100%; border-radius:6px; cursor:pointer;">
+      </div>
+    `;
+  }
+
+  // video (opsional)
+  let videoHTML = "";
+  if (tx.video) {
+    videoHTML = `
+      <div style="margin-top:10px;">
+        <a href="${tx.video}" target="_blank" 
+           style="display:inline-flex;align-items:center;gap:6px;
+                  padding:6px 10px;border-radius:6px;
+                  background:rgba(255,255,255,0.1);color:#4cc9f0;
+                  font-weight:500;text-decoration:none;">
+          📹 Tonton Video Dokumentasi
+        </a>
       </div>
     `;
   }
@@ -143,13 +159,14 @@ function showTransactionPopup(tx, anchorElement) {
       <div><strong>Nominal:</strong> ${formatRupiah(tx.amount)}</div>
       <div><strong>Sisa Saldo:</strong> ${formatRupiah(tx.balanceAfter)}</div>
     </div>
-    ${receiptHTML}
+    ${fotoHTML}
+    ${videoHTML}
   `;
   popup.appendChild(item);
 
-  if (tx.receipt) {
+  if (tx.foto) {
     const img = item.querySelector("img");
-    img.addEventListener("click", () => showImageModal(tx.receipt));
+    img.addEventListener("click", () => showImageModal(tx.foto));
   }
 
   const closeBtn = header.querySelector(".close-btn");
@@ -157,7 +174,7 @@ function showTransactionPopup(tx, anchorElement) {
 
   document.body.appendChild(popup);
 
-  // posisi dekat sel tabel
+  // posisi popup
   const rect = anchorElement.getBoundingClientRect();
   const top = rect.bottom + window.scrollY + 6;
   let left = rect.left + window.scrollX;
@@ -173,7 +190,7 @@ function showTransactionPopup(tx, anchorElement) {
   popup.style.zIndex = 9999;
 }
 
-// =================== Render ===================
+// =================== Render Tabel ===================
 function renderSummaryTable() {
   const ledger = computeLedger();
   const tbody = document.querySelector("#summary-body");
@@ -182,6 +199,7 @@ function renderSummaryTable() {
 
   ledger.forEach(row => {
     const tr = document.createElement("tr");
+
     const dateTd = document.createElement("td");
     dateTd.innerHTML = formatTanggalPendekHTML(row.date);
 
@@ -223,6 +241,7 @@ function renderSummaryTable() {
   `;
 }
 
+// =================== Riwayat Transaksi ===================
 let historyPage = 1;
 const historyPerPage = 5;
 
@@ -284,16 +303,34 @@ function renderHistoryList(page = 1, doScroll = false) {
 
     wrapper.append(header, title, noteDiv, detail);
 
-    if (tx.receipt) {
+    if (tx.foto) {
       const img = document.createElement("img");
-      img.src = tx.receipt;
+      img.src = tx.foto;
       img.alt = "Bukti";
       img.style.maxWidth = "120px";
       img.style.marginTop = "8px";
       img.style.borderRadius = "6px";
       img.style.cursor = "pointer";
-      img.addEventListener("click", () => showImageModal(tx.receipt));
+      img.addEventListener("click", () => showImageModal(tx.foto));
       wrapper.appendChild(img);
+    }
+
+    if (tx.video) {
+      const videoLink = document.createElement("a");
+      videoLink.href = tx.video;
+      videoLink.target = "_blank";
+      videoLink.innerHTML = "📹 Tonton Video Dokumentasi";
+      videoLink.style.display = "inline-flex";
+      videoLink.style.alignItems = "center";
+      videoLink.style.gap = "6px";
+      videoLink.style.padding = "4px 8px";
+      videoLink.style.borderRadius = "6px";
+      videoLink.style.marginTop = "8px";
+      videoLink.style.background = "rgba(255,255,255,0.08)";
+      videoLink.style.color = "#4cc9f0";
+      videoLink.style.fontWeight = "500";
+      videoLink.style.textDecoration = "none";
+      wrapper.appendChild(videoLink);
     }
 
     const sep = document.createElement("hr");
@@ -344,112 +381,3 @@ function renderHistoryList(page = 1, doScroll = false) {
     window.scrollTo({ top: topPos, behavior: "smooth" });
   }
 }
-
-// =================== Filter Periode ===================
-function renderPeriodeFilter(selectedPeriode, periodes) {
-  const container = document.getElementById("periode-filter");
-  if (!container) return;
-
-  container.innerHTML = "";
-  const label = document.createElement("label");
-  label.textContent = "Pilih Periode: ";
-  label.style.marginRight = "8px";
-
-  const select = document.createElement("select");
-  periodes.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    if (p === selectedPeriode) opt.selected = true;
-    select.appendChild(opt);
-  });
-
-  select.onchange = () => {
-    currentPeriode = select.value;
-    renderSummaryTable();
-    renderHistoryList(1, false);
-
-    const saldo = summary().net;
-    const saldoEl = document.getElementById("saldoNow");
-    saldoEl.textContent = formatRupiah(saldo);
-    if (saldo < 0) saldoEl.classList.add("negative");
-    else saldoEl.classList.remove("negative");
-
-    const allTransactions = getRawTransactions();
-    if (allTransactions.length > 0) {
-      const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];
-      document.getElementById("last-updated").innerText = "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
-    } else {
-      document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
-    }
-
-    // update periode label
-    const periodeInfo = document.getElementById("periode-info");
-    if (periodeInfo) {
-      periodeInfo.textContent = window.kasData[currentPeriode]?.periode || "";
-    }
-  };
-
-  container.append(label, select);
-
-  // tambahkan info periode di bawah filter
-  let periodeInfo = document.getElementById("periode-info");
-  if (!periodeInfo) {
-    periodeInfo = document.createElement("div");
-    periodeInfo.id = "periode-info";
-    periodeInfo.style.marginTop = "6px";
-    periodeInfo.style.fontSize = "0.9rem";
-    periodeInfo.style.color = "#ccc";
-    container.appendChild(periodeInfo);
-  }
-  periodeInfo.textContent = window.kasData[selectedPeriode]?.periode || "";
-}
-
-// =================== Init ===================
-document.addEventListener("DOMContentLoaded", () => {
-  function initKas() {
-    if (window.kasData && Object.keys(window.kasData).length > 0) {
-      const periodes = Object.keys(window.kasData).sort((a, b) =>
-        a.localeCompare(b, undefined, { numeric: true })
-      );
-      currentPeriode = periodes[periodes.length - 1];
-
-      renderPeriodeFilter(currentPeriode, periodes);
-      renderSummaryTable();
-      renderHistoryList();
-
-      const saldo = summary().net;
-      const saldoEl = document.getElementById("saldoNow");
-      saldoEl.textContent = formatRupiah(saldo);
-      if (saldo < 0) saldoEl.classList.add("negative");
-
-      const allTransactions = getRawTransactions();
-      if (allTransactions.length > 0) {
-        const latest = allTransactions.slice().sort((a, b) => toDate(b.date) - toDate(a.date))[0];
-        document.getElementById("last-updated").innerText =
-          "Terakhir diperbarui: " + formatTanggalPanjang(latest.date);
-      } else {
-        document.getElementById("last-updated").innerText = "Terakhir diperbarui: -";
-      }
-
-      // tampilkan periode saat init
-      const periodeInfo = document.getElementById("periode-info");
-      if (periodeInfo) {
-        periodeInfo.textContent = window.kasData[currentPeriode]?.periode || "";
-      }
-    } else {
-      console.warn("⚠️ kasData belum tersedia saat init.");
-    }
-  }
-
-  if (window.kasData) {
-    initKas();
-  } else {
-    const checkKas = setInterval(() => {
-      if (window.kasData && Object.keys(window.kasData).length > 0) {
-        clearInterval(checkKas);
-        initKas();
-      }
-    }, 500);
-  }
-});
