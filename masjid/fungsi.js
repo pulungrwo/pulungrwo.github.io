@@ -65,6 +65,33 @@ function summary() {
   return { income, expense, net: income - expense };
 }
 
+// =================== Animasi Saldo ===================
+function animateSaldo(targetValue) {
+  const saldoEl = document.getElementById("saldoNow");
+  if (!saldoEl) return;
+
+  let start = 0;
+  const duration = 3000; // 3 detik
+  const startTime = performance.now();
+
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const currentValue = Math.floor(progress * targetValue);
+
+    saldoEl.textContent = formatRupiah(currentValue);
+
+    if (targetValue < 0) saldoEl.classList.add("negative");
+    else saldoEl.classList.remove("negative");
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
 // =================== Modal Gambar ===================
 function showImageModal(src) {
   const existing = document.getElementById("imageModal");
@@ -382,7 +409,6 @@ function renderHistoryList(page = 1, doScroll = false) {
   }
 }
 
-
 // =================== Filter Periode ===================
 function renderPeriodeFilter(selectedPeriode, periodes) {
   const container = document.getElementById("periode-filter");
@@ -408,10 +434,7 @@ function renderPeriodeFilter(selectedPeriode, periodes) {
     renderHistoryList(1, false);
 
     const saldo = summary().net;
-    const saldoEl = document.getElementById("saldoNow");
-    saldoEl.textContent = formatRupiah(saldo);
-    if (saldo < 0) saldoEl.classList.add("negative");
-    else saldoEl.classList.remove("negative");
+    animateSaldo(saldo);
 
     const allTransactions = getRawTransactions();
     if (allTransactions.length > 0) {
@@ -462,9 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderHistoryList();
 
       const saldo = summary().net;
-      const saldoEl = document.getElementById("saldoNow");
-      saldoEl.textContent = formatRupiah(saldo);
-      if (saldo < 0) saldoEl.classList.add("negative");
+      animateSaldo(saldo);
 
       const allTransactions = getRawTransactions();
       if (allTransactions.length > 0) {
@@ -478,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "Terakhir diperbarui: -";
       }
 
-      // tampilkan periode saat init
+      // update info periode
       const periodeInfo = document.getElementById("periode-info");
       if (periodeInfo) {
         periodeInfo.textContent =
