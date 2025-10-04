@@ -169,6 +169,16 @@ foto: "",
 video: "https://vt.tiktok.com/ZSDtkmYgy/"
 
 },
+{
+date: "2025-10-03",
+description: "Infak Jumat",
+type: "income",
+amount: 15000,
+note: "",
+foto: "",
+video: ""
+
+},
 
     ]  
   }  
