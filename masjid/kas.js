@@ -179,6 +179,16 @@ foto: "",
 video: ""
 
 },
+{
+date: "2025-10-04",
+description: "Servis Ampli",
+type: "expense",
+amount: 100000,
+note: "",
+foto: "",
+video: ""
+
+},
 
     ]  
   }  
