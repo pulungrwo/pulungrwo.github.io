@@ -6,6 +6,16 @@ window.kasData = {
     periode: "Agustus 2025 – Maret 2026",  
     bendahara: "Pulung Riswanto",  
     transaksi: [  
+{
+date: "2025-10-10",
+description: "Infak Jumat",
+type: "income",
+amount: 5000,
+note: "",
+foto: "",
+video: ""
+
+},
       {  
         date: "2025-08-08",  
         description: "Panen Jagung",  
@@ -184,16 +194,6 @@ date: "2025-10-04",
 description: "Servis Ampli",
 type: "expense",
 amount: 100000,
-note: "",
-foto: "",
-video: ""
-
-},
-{
-date: "2025-10-10",
-description: "Infak Jumat",
-type: "income",
-amount: 5000,
 note: "",
 foto: "",
 video: ""
