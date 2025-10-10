@@ -189,6 +189,16 @@ foto: "",
 video: ""
 
 },
+{
+date: "2025-10-10",
+description: "Infak Jumat",
+type: "income",
+amount: 5000,
+note: "",
+foto: "",
+video: ""
+
+},
 
     ]  
   }  
