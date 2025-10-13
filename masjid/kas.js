@@ -194,7 +194,7 @@ date: "2025-10-04",
 description: "Servis Ampli",
 type: "expense",
 amount: 100000,
-note: "",
+note: "ampli diperbaiki oleh RT umbul tempe widoro kandang",
 foto: "",
 video: ""
 
