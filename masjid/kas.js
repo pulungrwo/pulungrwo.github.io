@@ -7,6 +7,36 @@ window.kasData = {
     bendahara: "Pulung Riswanto",  
     transaksi: [  
 {
+date: "2025-11-02",
+description: "Obat Lulangan",
+type: "expense",
+amount: 70000,
+note: "buat beli obat semprot khusus lulangan (pronate 200 SL)",
+foto: "",
+video: ""
+
+},
+{
+date: "2025-11-02",
+description: "Nurman Wibowo",
+type: "income",
+amount: 70000,
+note: "buat beli obat semprot khusus lulangan",
+foto: "",
+video: ""
+
+},
+{
+date: "2025-10-31",
+description: "Infak Jumat",
+type: "income",
+amount: 14000,
+note: "",
+foto: "",
+video: ""
+
+},
+{
 date: "2025-10-24",
 description: "Infak Jumat",
 type: "income",
