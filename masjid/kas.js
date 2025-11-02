@@ -8,20 +8,20 @@ window.kasData = {
     transaksi: [  
 {
 date: "2025-11-02",
-description: "Obat Lulangan",
-type: "expense",
+description: "Nurman Wibowo",
+type: "income",
 amount: 70000,
-note: "buat beli obat semprot khusus lulangan (pronate 200 SL)",
+note: "buat beli obat semprot khusus lulangan",
 foto: "",
 video: ""
 
 },
 {
 date: "2025-11-02",
-description: "Nurman Wibowo",
-type: "income",
+description: "Obat Lulangan",
+type: "expense",
 amount: 70000,
-note: "buat beli obat semprot khusus lulangan",
+note: "buat beli obat semprot khusus lulangan (pronate 200 SL)",
 foto: "",
 video: ""
 
