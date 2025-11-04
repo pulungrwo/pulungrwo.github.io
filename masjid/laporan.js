@@ -99,8 +99,8 @@ function generateReport() {
     lines.push(`*📢 Laporan Bulanan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear}`);
   } else {
-    // Tahunan, ambil langsung dari key kas.js (misal "1447H")
-    lines.push(`*📢 Laporan Tahunan Kas Masjid Al-Huda – ${periode}*`);
+    // Tahunan
+    lines.push(`*📢 Laporan Tahunan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear} - ${endMonthYear}`);
   }
 
@@ -133,23 +133,6 @@ function generateReport() {
   lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
   lines.push(`-------------------------`);
 
-  // 🆕 Tambahkan daftar video dokumentasi
-  const videoTxs = sortedSelected.filter(t => t.video);
-  if (videoTxs.length > 0) {
-    lines.push(`\n🎥 _Konten Video Dokumentasi_`);
-    lines.push(`-----------`);
-    videoTxs.forEach(t => {
-      const cleanLink = t.video.replace(/^https?:\/\//, "");
-      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
-        day: "numeric", month: "long", year: "numeric"
-      });
-      lines.push(`▶️ *${t.description}*`);
-      lines.push(`${cleanLink}`);
-      lines.push(`${humanDate}`);
-      lines.push(`-----------`);
-    });
-  }
-
   lines.push(`\n📌Info: 👉tanjungbulan.my.id/masjid`);
   lines.push(`\n> dibuat otomatis oleh sistem`);
   output.value = lines.join("\n");
@@ -159,8 +142,8 @@ function generateReport() {
 
   let html = `
   <div class="laporan-elegan">
-    <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda${startMonthYear !== endMonthYear ? " – " + periode : ""}</h2>
-    <p style="text-align:center;">Periode: ${kasData[periode]?.periode || (startMonthYear + (startMonthYear !== endMonthYear ? " - " + endMonthYear : ""))}</p>
+    <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda</h2>
+    <p style="text-align:center;">Periode: ${startMonthYear === endMonthYear ? startMonthYear : `${startMonthYear} - ${endMonthYear}`}</p>
     <hr>
     <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
     <h3 style="color:green;">🟢 Pemasukan</h3>
@@ -197,22 +180,6 @@ function generateReport() {
     <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
     <div class="saldo-akhir">💰 Saldo Akhir: Rp ${saldoAkhir.toLocaleString("id-ID")}</div>
     <hr>
-  `;
-
-  if (videoTxs.length > 0) {
-    html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
-    videoTxs.forEach(t => {
-      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
-        day: "numeric", month: "long", year: "numeric"
-      });
-      html += `<li><b>${t.description}</b><br>
-      <a href="${t.video}" target="_blank">${t.video}</a><br>
-      <small>${humanDate}</small></li>`;
-    });
-    html += "</ul><hr>";
-  }
-
-  html += `
     <div class="tagline">
       📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
       <small>Dibuat otomatis oleh sistem</small>
@@ -245,6 +212,9 @@ function formatMonthYear(dateObj) {
 
 function printReport() {
   const laporan = document.getElementById("reportPreview").innerHTML;
+
+  // 🧾 Cetak hanya laporan keuangan (tanpa dokumentasi)
+  const laporanKeuanganOnly = laporan.replace(/<h3>🎥[\s\S]*?(<\/hr>|<\/div>)/gi, "");
 
   const win = window.open("", "_blank");
   win.document.write(`
@@ -323,9 +293,9 @@ function printReport() {
         <div class="header">
           <img src="https://tanjungbulan.my.id/img/risma_1.png" alt="Logo RISMA Tanjung Bulan">
           <h1>Masjid Al-Huda Tanjung Bulan</h1>
-          <p>Laporan Keuangan & Dokumentasi Kegiatan</p>
+          <p>Laporan Keuangan</p>
         </div>
-        ${laporan}
+        ${laporanKeuanganOnly}
         <div class="tagline">
           <p>Dicetak otomatis dari sistem <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a></p>
           <p><small>© RISMA Tanjung Bulan</small></p>
