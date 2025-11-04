@@ -3,8 +3,7 @@ const checklist = document.getElementById("checklist");
 const output = document.getElementById("reportOutput");
 
 
-// 🆕 Checkbox toggle gunakan saldo periode sebelumnya
-let usePreviousSaldo = false;
+
 
 function populatePeriodeOptions() {
   const periodeKeys = Object.keys(kas.raw);
@@ -22,20 +21,7 @@ function populateChecklist() {
   const txs = kas.raw[periode]?.transaksi || [];
   checklist.innerHTML = "";
 
-  // 🆕 Tambahkan checkbox kontrol saldo
-  const saldoLabel = document.createElement("label");
-  const saldoCheckbox = document.createElement("input");
-  saldoCheckbox.type = "checkbox";
-  saldoCheckbox.id = "usePrevSaldo";
-  saldoCheckbox.checked = usePreviousSaldo;
-  saldoCheckbox.addEventListener("change", () => {
-    usePreviousSaldo = saldoCheckbox.checked;
-  });
-  saldoLabel.appendChild(saldoCheckbox);
-  saldoLabel.append(" Gunakan saldo periode sebelumnya");
-  checklist.appendChild(saldoLabel);
-  checklist.appendChild(document.createElement("br"));
-  checklist.appendChild(document.createElement("hr"));
+  
 
 
   // 🆕 Tambahkan tombol pilih semua
