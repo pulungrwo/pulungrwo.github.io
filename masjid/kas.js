@@ -2,7 +2,7 @@
 // Penyimpanan data arus kas per tahun Hijriah  
 
 window.kasData = {  
-  "1447H": {  
+  "Idul Fitri 1447H": {  
     periode: "Agustus 2025 – Maret 2026",  
     bendahara: "Pulung Riswanto",  
     transaksi: [  
@@ -77,7 +77,7 @@ video: ""
       },  
       {  
         date: "2025-08-08",  
-        description: "Sisa Kas",  
+        description: "Saldo Awal",  
         type: "income",  
         amount: 825000,  
         note: "Sisa uang infak dan sumbangan warga yang di pegang oleh bapak Suhdi selaku bendahara lama, sisa 824 RB digenapkan 825.",  
@@ -131,7 +131,7 @@ video: ""
       },  
       {  
         date: "2025-08-22",  
-        description: "Beli Mic + Bensin",  
+        description: "Beli Mic",  
         type: "expense",  
         amount: 235000,  
         note: "Harga mic 225.000 dan untuk beli bensin motor bapak RT Suhdi 10.000",  
