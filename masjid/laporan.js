@@ -166,7 +166,15 @@ function generateReport() {
   let html = `
   <div class="laporan-elegan">
     <div class="header">
-      <img class="logo" src="https://tanjungbulan.my.id/img/risma_1.png" alt="RISMA Logo">
+      <img class="logo" src="https://tanjungbulan.my.id/img/risma_1.png" alt="RISMA Logo" style="
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #4CAF50;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  margin-bottom:15px;
+">
       <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda</h2>
       <p>📆 ${startMonthYear === endMonthYear ? startMonthYear : `${startMonthYear} - ${endMonthYear}`}</p>
       <hr>
