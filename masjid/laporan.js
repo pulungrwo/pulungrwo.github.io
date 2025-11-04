@@ -289,6 +289,80 @@ function formatMonthYear(dateObj) {
   });
 }
 
+
+function printReport() {
+  const laporan = document.getElementById("reportPreview").innerHTML;
+
+  // Buat jendela print baru
+  const win = window.open("", "_blank");
+  win.document.write(`
+    <html>
+      <head>
+        <title>Laporan Kas Masjid Al-Huda</title>
+        <style>
+          body {
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+            color: #333;
+            padding: 20px;
+          }
+          h2 {
+            text-align: center;
+            color: #2d3436;
+          }
+          h3 {
+            color: #2d3436;
+            margin-top: 12px;
+            margin-bottom: 6px;
+          }
+          ul { list-style-type: "• "; padding-left: 20px; }
+          li { margin-bottom: 4px; }
+          hr { border: none; border-top: 1px solid #ccc; margin: 10px 0; }
+          .saldo-akhir {
+            background: linear-gradient(90deg, #00b894, #55efc4);
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+          }
+          .tagline {
+            text-align: center;
+            color: #777;
+            font-size: 0.8em;
+            margin-top: 10px;
+          }
+          a {
+            color: #0984e3;
+            text-decoration: none;
+          }
+          a:hover {
+            text-decoration: underline;
+          }
+          @media print {
+            button { display: none; }
+            body { margin: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        ${laporan}
+        <div class="tagline">
+          <p>Dicetak otomatis dari sistem tanjungbulan.my.id/masjid</p>
+        </div>
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   populatePeriodeOptions();
   periodeSelect.addEventListener("change", populateChecklist);
