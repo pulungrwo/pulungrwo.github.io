@@ -13,7 +13,9 @@ function tambahNol() {
 }
 
 function generateCode() {
-  const description = document.getElementById("description").value.trim();
+  let description = document.getElementById("description").value.trim();
+  if (!description) description = "Infak Jumat"; // ✅ isi default jika kosong
+
   const type = document.getElementById("type").value;
   const amount = parseInt(document.getElementById("amount").value);
   const note = document.getElementById("note").value.trim();
@@ -21,8 +23,8 @@ function generateCode() {
   const foto = document.getElementById("foto").value.trim();
   const video = document.getElementById("video").value.trim();
 
-  if (!description || isNaN(amount) || !dateInput) {
-    alert("Mohon isi tanggal, keterangan, dan jumlah dengan benar.");
+  if (isNaN(amount) || !dateInput) {
+    alert("Mohon isi tanggal dan jumlah dengan benar.");
     return;
   }
 
