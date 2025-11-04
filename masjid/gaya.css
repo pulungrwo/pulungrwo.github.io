@@ -584,3 +584,93 @@ h1, h2 {
       padding: 4px 8px;
       border-radius: 5px;
     }
+
+/* ===========================
+   🎨 LAPORAN KAS MASJID ELEGAN
+   =========================== */
+
+.laporan-elegan {
+  background: #fefefe;
+  border-radius: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-top: 12px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: 0.3s ease;
+}
+
+.laporan-elegan:hover {
+  box-shadow: 0 5px 12px rgba(0,0,0,0.12);
+}
+
+.laporan-elegan h2 {
+  text-align: center;
+  margin: 0;
+  color: #2d3436;
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+}
+
+.laporan-elegan p {
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.laporan-elegan h3 {
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+}
+
+.laporan-elegan ul {
+  list-style-type: "• ";
+  padding-left: 22px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.laporan-elegan li {
+  margin-bottom: 4px;
+}
+
+.laporan-elegan a {
+  color: #0984e3;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.laporan-elegan a:hover {
+  text-decoration: underline;
+}
+
+.laporan-elegan small {
+  color: #777;
+  font-size: 0.85em;
+}
+
+.laporan-elegan hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+.laporan-elegan .saldo-akhir {
+  background: linear-gradient(90deg, #00b894, #55efc4);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.laporan-elegan .tagline {
+  text-align: center;
+  color: #888;
+  font-size: 0.8em;
+  margin-top: 6px;
+}
