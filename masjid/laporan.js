@@ -200,12 +200,14 @@ function generateReport() {
 
 // 🆕 Tampilkan laporan elegan di bawah tombol salin
 const previewDiv = document.getElementById("reportPreview");
+
 let html = `
-  <div style="background:#f9f9f9;border-radius:12px;padding:16px;margin-top:10px;font-family:'Poppins',sans-serif;color:#333;">
-    <h2 style="text-align:center;margin-bottom:6px;">📊 Laporan Kas Masjid Al-Huda</h2>
-    <p style="text-align:center;color:#666;margin-top:0;margin-bottom:10px;">Periode: ${startMonthYear}${startMonthYear !== endMonthYear ? " - " + endMonthYear : ""}</p>
+  <div class="laporan-elegan">
+    <h2>📊 Laporan Kas Masjid Al-Huda</h2>
+    <p style="text-align:center;">Periode: ${startMonthYear}${startMonthYear !== endMonthYear ? " - " + endMonthYear : ""}</p>
     <hr>
     <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
+
     <h3 style="color:green;">🟢 Pemasukan</h3>
 `;
 
@@ -222,7 +224,7 @@ if (pemasukan.length === 0) {
 
 html += `
   <p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>
-  <h3 style="color:red;">🔴 Pengeluaran</h3>
+  <h3 style="color:#d63031;">🔴 Pengeluaran</h3>
 `;
 
 if (pengeluaran.length === 0) {
@@ -238,8 +240,7 @@ if (pengeluaran.length === 0) {
 
 html += `
   <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
-  <hr>
-  <p><b>Saldo Akhir:</b> Rp ${saldoAkhir.toLocaleString("id-ID")}</p>
+  <div class="saldo-akhir">💰 Saldo Akhir: Rp ${saldoAkhir.toLocaleString("id-ID")}</div>
   <hr>
 `;
 
@@ -256,14 +257,16 @@ if (videoTxs.length > 0) {
   html += "</ul><hr>";
 }
 
-html += `<p style="font-size:12px;color:#666;">📌 Info: tanjungbulan.my.id/masjid</p>
-          <p style="font-size:12px;color:#888;">Dibuat otomatis oleh sistem</p>
+html += `
+  <div class="tagline">
+    📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
+    <small>Dibuat otomatis oleh sistem</small>
   </div>
+</div>
 `;
 
 previewDiv.innerHTML = html;
 previewDiv.style.display = "block";
-
 
 }
 
