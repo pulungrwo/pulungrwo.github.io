@@ -197,6 +197,74 @@ function generateReport() {
   lines.push(`\n> dibuat otomatis oleh sistem`);
 
   output.value = lines.join("\n");
+
+// 🆕 Tampilkan laporan elegan di bawah tombol salin
+const previewDiv = document.getElementById("reportPreview");
+let html = `
+  <div style="background:#f9f9f9;border-radius:12px;padding:16px;margin-top:10px;font-family:'Poppins',sans-serif;color:#333;">
+    <h2 style="text-align:center;margin-bottom:6px;">📊 Laporan Kas Masjid Al-Huda</h2>
+    <p style="text-align:center;color:#666;margin-top:0;margin-bottom:10px;">Periode: ${startMonthYear}${startMonthYear !== endMonthYear ? " - " + endMonthYear : ""}</p>
+    <hr>
+    <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
+    <h3 style="color:green;">🟢 Pemasukan</h3>
+`;
+
+if (pemasukan.length === 0) {
+  html += `<p>(Tidak ada pemasukan)</p>`;
+} else {
+  html += "<ul>";
+  for (const [desc, obj] of Object.entries(groupedIn)) {
+    const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+    html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+  }
+  html += "</ul>";
+}
+
+html += `
+  <p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>
+  <h3 style="color:red;">🔴 Pengeluaran</h3>
+`;
+
+if (pengeluaran.length === 0) {
+  html += `<p>(Tidak ada pengeluaran)</p>`;
+} else {
+  html += "<ul>";
+  for (const [desc, obj] of Object.entries(groupedOut)) {
+    const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+    html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+  }
+  html += "</ul>";
+}
+
+html += `
+  <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
+  <hr>
+  <p><b>Saldo Akhir:</b> Rp ${saldoAkhir.toLocaleString("id-ID")}</p>
+  <hr>
+`;
+
+if (videoTxs.length > 0) {
+  html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
+  videoTxs.forEach(t => {
+    const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+      day: "numeric", month: "long", year: "numeric"
+    });
+    html += `<li><b>${t.description}</b><br>
+    <a href="${t.video}" target="_blank">${t.video}</a><br>
+    <small>${humanDate}</small></li>`;
+  });
+  html += "</ul><hr>";
+}
+
+html += `<p style="font-size:12px;color:#666;">📌 Info: tanjungbulan.my.id/masjid</p>
+          <p style="font-size:12px;color:#888;">Dibuat otomatis oleh sistem</p>
+  </div>
+`;
+
+previewDiv.innerHTML = html;
+previewDiv.style.display = "block";
+
+
 }
 
 function copyReport() {
