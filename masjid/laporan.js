@@ -2,11 +2,8 @@ const periodeSelect = document.getElementById("periode");
 const checklist = document.getElementById("checklist");
 const output = document.getElementById("reportOutput");
 
-
-
-
 function populatePeriodeOptions() {
-  const periodeKeys = Object.keys(kas.raw);
+  const periodeKeys = Object.keys(kasData);
   periodeSelect.innerHTML = "";
   periodeKeys.forEach(p => {
     const option = document.createElement("option");
@@ -18,21 +15,16 @@ function populatePeriodeOptions() {
 
 function populateChecklist() {
   const periode = periodeSelect.value;
-  const txs = kas.raw[periode]?.transaksi || [];
+  const txs = kasData[periode]?.transaksi || [];
   checklist.innerHTML = "";
 
-  
-
-
-  // 🆕 Tambahkan tombol pilih semua
+  // 🆕 Tombol pilih semua
   const selectAllBtn = document.createElement("button");
   selectAllBtn.textContent = "Pilih Semua Transaksi";
   selectAllBtn.style.margin = "6px 0";
   selectAllBtn.onclick = () => {
     const checkboxes = checklist.querySelectorAll("input[type=checkbox]");
-    checkboxes.forEach(cb => {
-      if (cb.id !== "usePrevSaldo") cb.checked = true;
-    });
+    checkboxes.forEach(cb => cb.checked = true);
   };
   checklist.appendChild(selectAllBtn);
   checklist.appendChild(document.createElement("hr"));
@@ -52,10 +44,9 @@ function populateChecklist() {
 
 function generateReport() {
   const periode = periodeSelect.value;
-  const txs = kas.raw[periode]?.transaksi || [];
+  const txs = kasData[periode]?.transaksi || [];
 
   const checked = Array.from(checklist.querySelectorAll("input[type=checkbox]:checked"))
-    .filter(cb => cb.id !== "usePrevSaldo") // abaikan checkbox saldo
     .map(cb => parseInt(cb.value));
 
   if (checked.length === 0) {
@@ -70,32 +61,13 @@ function generateReport() {
   const startDate = new Date(sortedSelected[0].date);
   const endDate = new Date(sortedSelected.at(-1).date);
 
-  let saldoAwal = 0;
+  // ✅ Saldo awal hanya dari transaksi sebelum periode terpilih
+  const saldoAwal = txs
+    .filter(t => new Date(t.date) < startDate)
+    .reduce((s, t) =>
+      s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
 
-  if (usePreviousSaldo) {
-    // ✅ Gunakan periode sebelumnya
-    const allYears = Object.keys(kas.raw).sort();
-    const currentIndex = allYears.indexOf(periode);
-
-    for (let i = 0; i < currentIndex; i++) {
-      const txsSebelumnya = kas.raw[allYears[i]]?.transaksi || [];
-      saldoAwal += txsSebelumnya.reduce((s, t) =>
-        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
-    }
-
-    saldoAwal += txs
-      .filter(t => new Date(t.date) < startDate)
-      .reduce((s, t) =>
-        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
-  } else {
-    // ✅ Hanya saldo dari periode terpilih
-    saldoAwal = txs
-      .filter(t => new Date(t.date) < startDate)
-      .reduce((s, t) =>
-        s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
-  }
-
-  // Kelompokkan transaksi berdasarkan deskripsi
+  // Kelompokkan transaksi
   function groupByDescription(arr) {
     const map = {};
     arr.forEach(t => {
@@ -123,15 +95,16 @@ function generateReport() {
 
   const lines = [];
   if (startMonthYear === endMonthYear) {
+    // Bulanan
     lines.push(`*📢 Laporan Bulanan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear}`);
   } else {
-    lines.push(`*📢 Laporan Tahunan Kas Masjid Al-Huda*`);
+    // Tahunan, ambil langsung dari key kas.js (misal "1447H")
+    lines.push(`*📢 Laporan Tahunan Kas Masjid Al-Huda – ${periode}*`);
     lines.push(`📅 ${startMonthYear} - ${endMonthYear}`);
   }
 
   lines.push(`-------------------------`);
-
   lines.push(`\n💰 *Saldo Awal:* *${saldoAwal.toLocaleString("id-ID")}*`);
 
   lines.push(`\n🟢 *Pemasukan:*`);
@@ -143,9 +116,10 @@ function generateReport() {
       lines.push(`+ ${label}: ${obj.total.toLocaleString("id-ID")}`);
     }
   }
-  lines.push(`\n*Total Pemasukan:* ${totalIn.toLocaleString("id-ID")}`);
 
+  lines.push(`\n*Total Pemasukan:* ${totalIn.toLocaleString("id-ID")}`);
   lines.push(`\n🔴 *Pengeluaran:*`);
+
   if (pengeluaran.length === 0) {
     lines.push(`(Tidak ada)`);
   } else {
@@ -154,14 +128,12 @@ function generateReport() {
       lines.push(`- ${label}: ${obj.total.toLocaleString("id-ID")}`);
     }
   }
+
   lines.push(`\n*Total Pengeluaran:* ${totalOut.toLocaleString("id-ID")}`);
-
   lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
-
-
   lines.push(`-------------------------`);
 
-  // 🆕 Tambahkan daftar video dokumentasi jika ada
+  // 🆕 Tambahkan daftar video dokumentasi
   const videoTxs = sortedSelected.filter(t => t.video);
   if (videoTxs.length > 0) {
     lines.push(`\n🎥 _Konten Video Dokumentasi_`);
@@ -169,9 +141,7 @@ function generateReport() {
     videoTxs.forEach(t => {
       const cleanLink = t.video.replace(/^https?:\/\//, "");
       const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
+        day: "numeric", month: "long", year: "numeric"
       });
       lines.push(`▶️ *${t.description}*`);
       lines.push(`${cleanLink}`);
@@ -181,81 +151,77 @@ function generateReport() {
   }
 
   lines.push(`\n📌Info: 👉tanjungbulan.my.id/masjid`);
-
   lines.push(`\n> dibuat otomatis oleh sistem`);
-
   output.value = lines.join("\n");
 
-// 🆕 Tampilkan laporan elegan di bawah tombol salin
-const previewDiv = document.getElementById("reportPreview");
+  // 🆕 Laporan elegan di bawah tombol salin
+  const previewDiv = document.getElementById("reportPreview");
 
-let html = `
+  let html = `
   <div class="laporan-elegan">
-    <h2>📊 Laporan Kas Masjid Al-Huda</h2>
-    <p style="text-align:center;">Periode: ${startMonthYear}${startMonthYear !== endMonthYear ? " - " + endMonthYear : ""}</p>
+    <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda${startMonthYear !== endMonthYear ? " – " + periode : ""}</h2>
+    <p style="text-align:center;">Periode: ${kasData[periode]?.periode || (startMonthYear + (startMonthYear !== endMonthYear ? " - " + endMonthYear : ""))}</p>
     <hr>
     <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
-
     <h3 style="color:green;">🟢 Pemasukan</h3>
-`;
+  `;
 
-if (pemasukan.length === 0) {
-  html += `<p>(Tidak ada pemasukan)</p>`;
-} else {
-  html += "<ul>";
-  for (const [desc, obj] of Object.entries(groupedIn)) {
-    const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
-    html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+  if (pemasukan.length === 0) {
+    html += `<p>(Tidak ada pemasukan)</p>`;
+  } else {
+    html += "<ul>";
+    for (const [desc, obj] of Object.entries(groupedIn)) {
+      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+    }
+    html += "</ul>";
   }
-  html += "</ul>";
-}
 
-html += `
-  <p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>
-  <h3 style="color:#d63031;">🔴 Pengeluaran</h3>
-`;
+  html += `
+    <p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>
+    <h3 style="color:#d63031;">🔴 Pengeluaran</h3>
+  `;
 
-if (pengeluaran.length === 0) {
-  html += `<p>(Tidak ada pengeluaran)</p>`;
-} else {
-  html += "<ul>";
-  for (const [desc, obj] of Object.entries(groupedOut)) {
-    const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
-    html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+  if (pengeluaran.length === 0) {
+    html += `<p>(Tidak ada pengeluaran)</p>`;
+  } else {
+    html += "<ul>";
+    for (const [desc, obj] of Object.entries(groupedOut)) {
+      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
+    }
+    html += "</ul>";
   }
-  html += "</ul>";
-}
 
-html += `
-  <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
-  <div class="saldo-akhir">💰 Saldo Akhir: Rp ${saldoAkhir.toLocaleString("id-ID")}</div>
-  <hr>
-`;
+  html += `
+    <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
+    <div class="saldo-akhir">💰 Saldo Akhir: Rp ${saldoAkhir.toLocaleString("id-ID")}</div>
+    <hr>
+  `;
 
-if (videoTxs.length > 0) {
-  html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
-  videoTxs.forEach(t => {
-    const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
-      day: "numeric", month: "long", year: "numeric"
+  if (videoTxs.length > 0) {
+    html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
+    videoTxs.forEach(t => {
+      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+        day: "numeric", month: "long", year: "numeric"
+      });
+      html += `<li><b>${t.description}</b><br>
+      <a href="${t.video}" target="_blank">${t.video}</a><br>
+      <small>${humanDate}</small></li>`;
     });
-    html += `<li><b>${t.description}</b><br>
-    <a href="${t.video}" target="_blank">${t.video}</a><br>
-    <small>${humanDate}</small></li>`;
-  });
-  html += "</ul><hr>";
-}
+    html += "</ul><hr>";
+  }
 
-html += `
-  <div class="tagline">
-    📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
-    <small>Dibuat otomatis oleh sistem</small>
+  html += `
+    <div class="tagline">
+      📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
+      <small>Dibuat otomatis oleh sistem</small>
+    </div>
   </div>
-</div>
-`;
+  `;
 
-previewDiv.innerHTML = html;
-previewDiv.style.display = "block";
-
+  previewDiv.innerHTML = html;
+  previewDiv.style.display = "block";
 }
 
 function copyReport() {
@@ -276,7 +242,6 @@ function formatMonthYear(dateObj) {
     year: "numeric"
   });
 }
-
 
 function printReport() {
   const laporan = document.getElementById("reportPreview").innerHTML;
@@ -365,18 +330,12 @@ function printReport() {
           <p>Dicetak otomatis dari sistem <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a></p>
           <p><small>© RISMA Tanjung Bulan</small></p>
         </div>
-        <script>
-          window.onload = function() {
-            window.print();
-          };
-        </script>
+        <script>window.onload = function(){ window.print(); }</script>
       </body>
     </html>
   `);
   win.document.close();
 }
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   populatePeriodeOptions();
