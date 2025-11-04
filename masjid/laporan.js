@@ -293,7 +293,6 @@ function formatMonthYear(dateObj) {
 function printReport() {
   const laporan = document.getElementById("reportPreview").innerHTML;
 
-  // Buat jendela print baru
   const win = window.open("", "_blank");
   win.document.write(`
     <html>
@@ -306,9 +305,30 @@ function printReport() {
             color: #333;
             padding: 20px;
           }
+          .header {
+            text-align: center;
+            margin-bottom: 10px;
+          }
+          .header img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 6px;
+          }
+          .header h1 {
+            font-size: 1.3rem;
+            margin: 0;
+            color: #2d3436;
+          }
+          .header p {
+            margin: 2px 0 8px;
+            color: #636e72;
+            font-size: 0.9rem;
+          }
           h2 {
             text-align: center;
             color: #2d3436;
+            margin-top: 6px;
           }
           h3 {
             color: #2d3436;
@@ -347,9 +367,15 @@ function printReport() {
         </style>
       </head>
       <body>
+        <div class="header">
+          <img src="https://tanjungbulan.my.id/img/risma_1.png" alt="Logo RISMA Tanjung Bulan">
+          <h1>Masjid Al-Huda Tanjung Bulan</h1>
+          <p>Laporan Keuangan & Dokumentasi Kegiatan</p>
+        </div>
         ${laporan}
         <div class="tagline">
-          <p>Dicetak otomatis dari sistem tanjungbulan.my.id/masjid</p>
+          <p>Dicetak otomatis dari sistem <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a></p>
+          <p><small>© RISMA Tanjung Bulan</small></p>
         </div>
         <script>
           window.onload = function() {
@@ -361,6 +387,7 @@ function printReport() {
   `);
   win.document.close();
 }
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
