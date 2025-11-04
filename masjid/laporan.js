@@ -2,6 +2,9 @@ const periodeSelect = document.getElementById("periode");
 const checklist = document.getElementById("checklist");
 const output = document.getElementById("reportOutput");
 
+// =========================================================
+// 🗓 Populate periode options
+// =========================================================
 function populatePeriodeOptions() {
   const periodeKeys = Object.keys(kasData);
   periodeSelect.innerHTML = "";
@@ -13,12 +16,15 @@ function populatePeriodeOptions() {
   });
 }
 
+// =========================================================
+// 📋 Populate checklist transaksi
+// =========================================================
 function populateChecklist() {
   const periode = periodeSelect.value;
   const txs = kasData[periode]?.transaksi || [];
   checklist.innerHTML = "";
 
-  // 🆕 Tombol pilih semua
+  // Tombol pilih semua
   const selectAllBtn = document.createElement("button");
   selectAllBtn.textContent = "Pilih Semua Transaksi";
   selectAllBtn.style.margin = "6px 0";
@@ -42,6 +48,9 @@ function populateChecklist() {
   });
 }
 
+// =========================================================
+// 🔑 Generate laporan
+// =========================================================
 function generateReport() {
   const periode = periodeSelect.value;
   const txs = kasData[periode]?.transaksi || [];
@@ -59,25 +68,26 @@ function generateReport() {
   const startDate = new Date(sortedSelected[0].date);
   const endDate = new Date(sortedSelected.at(-1).date);
 
-  // ✅ Saldo awal dari transaksi sebelum periode
+  // ================= Saldo awal dari transaksi sebelum periode =================
   let saldoAwal = txs
     .filter(t => new Date(t.date) < startDate)
     .reduce((s, t) =>
-      s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
+      s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0
+    );
 
-  // ✅ Tambahkan transaksi "Saldo Awal" dalam periode
+  // ================= Tambahkan transaksi "Saldo Awal" dalam periode =================
   const saldoAwalDalamPeriode = sortedSelected.filter(
     t => t.description.toLowerCase().includes("saldo awal")
   );
   const totalSaldoAwalTx = saldoAwalDalamPeriode.reduce((s, t) => s + t.amount, 0);
   saldoAwal += totalSaldoAwalTx;
 
-  // Filter transaksi agar "Saldo Awal" tidak ikut ke pemasukan
+  // ================= Filter transaksi agar "Saldo Awal" tidak ikut ke pemasukan =================
   const filteredSelected = sortedSelected.filter(
     t => !t.description.toLowerCase().includes("saldo awal")
   );
 
-  // Kelompokkan transaksi dengan urutan tanggal
+  // ================= Fungsi pengelompokan transaksi =================
   function groupByDescription(arr) {
     const map = {};
     arr.forEach(t => {
@@ -103,6 +113,7 @@ function generateReport() {
   const startMonthYear = formatMonthYear(startDate);
   const endMonthYear = formatMonthYear(endDate);
 
+  // ================= Teks laporan untuk WA =================
   const lines = [];
   if (startMonthYear === endMonthYear) {
     lines.push(`*📢 Laporan Bulanan Kas Masjid Al-Huda*`);
@@ -126,8 +137,8 @@ function generateReport() {
   }
 
   lines.push(`\n*Total Pemasukan:* ${totalIn.toLocaleString("id-ID")}`);
-  lines.push(`\n🔴 *Pengeluaran:*`);
 
+  lines.push(`\n🔴 *Pengeluaran:*`);
   if (pengeluaran.length === 0) {
     lines.push(`(Tidak ada)`);
   } else {
@@ -141,26 +152,28 @@ function generateReport() {
   lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
   lines.push(`-------------------------`);
 
-  // Hapus video dokumentasi dari laporan WA dan preview
-  // lines.push(`🎥 _Konten Video Dokumentasi_`); // removed
+  // ================= Video dokumentasi hanya di preview =================
+  const videoTxs = filteredSelected.filter(t => t.video);
 
   lines.push(`📌 Info: 👉 tanjungbulan.my.id/masjid`);
   lines.push(`> dibuat otomatis oleh sistem`);
 
   output.value = lines.join("\n");
 
-  // 🆕 Laporan elegan untuk preview
+  // ================= Laporan elegan untuk preview =================
   const previewDiv = document.getElementById("reportPreview");
 
   let html = `
   <div class="laporan-elegan">
-    <div class="header" style="text-align:center;">
-      <img class="logo" src="https://tanjungbulan.my.id/img/risma_1.png" alt="RISMA Logo" style="width:80px;height:80px;margin-bottom:10px;">
+    <div class="header">
+      <img class="logo" src="https://tanjungbulan.my.id/img/risma_1.png" alt="RISMA Logo">
       <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda</h2>
       <p>📆 ${startMonthYear === endMonthYear ? startMonthYear : `${startMonthYear} - ${endMonthYear}`}</p>
       <hr>
     </div>
+
     <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
+
     <h3 style="color:green;">🟢 Pemasukan</h3>
   `;
 
@@ -175,11 +188,9 @@ function generateReport() {
     html += "</ul>";
   }
 
-  html += `
-    <p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>
-    <h3 style="color:#d63031;">🔴 Pengeluaran</h3>
-  `;
+  html += `<p><b>Total Pemasukan:</b> Rp ${totalIn.toLocaleString("id-ID")}</p>`;
 
+  html += `<h3 style="color:#d63031;">🔴 Pengeluaran</h3>`;
   if (pengeluaran.length === 0) {
     html += `<p>(Tidak ada pengeluaran)</p>`;
   } else {
@@ -191,11 +202,24 @@ function generateReport() {
     html += "</ul>";
   }
 
+  html += `<p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>`;
+  html += `<p><b>Saldo Akhir:</b> Rp ${saldoAkhir.toLocaleString("id-ID")}</p>`;
+
+  if (videoTxs.length > 0) {
+    html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
+    videoTxs.forEach(t => {
+      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+        day: "numeric", month: "long", year: "numeric"
+      });
+      html += `<li><b>${t.description}</b><br><a href="${t.video}" target="_blank">${t.video}</a><br><small>${humanDate}</small></li>`;
+    });
+    html += "</ul><hr>";
+  } else {
+    html += `<hr>`;
+  }
+
   html += `
-    <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
-    <p><b>Saldo Akhir:</b> Rp ${saldoAkhir.toLocaleString("id-ID")}</p>
-    <hr>
-    <div class="footer" style="text-align:center;">
+    <div class="footer">
       📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
       <small>Dibuat otomatis oleh sistem</small>
     </div>
@@ -206,18 +230,27 @@ function generateReport() {
   previewDiv.style.display = "block";
 }
 
+// =========================================================
+// 📋 Copy laporan ke clipboard
+// =========================================================
 function copyReport() {
   output.select();
   document.execCommand("copy");
   alert("Teks laporan disalin ke clipboard.");
 }
 
+// =========================================================
+// 📲 Kirim laporan ke WhatsApp
+// =========================================================
 function sendToWhatsApp() {
   const text = encodeURIComponent(output.value);
   const url = `https://wa.me/?text=${text}`;
   window.open(url, '_blank');
 }
 
+// =========================================================
+// 📅 Format month & year
+// =========================================================
 function formatMonthYear(dateObj) {
   return dateObj.toLocaleDateString("id-ID", {
     month: "long",
@@ -225,6 +258,9 @@ function formatMonthYear(dateObj) {
   });
 }
 
+// =========================================================
+// 🖨 Print laporan
+// =========================================================
 function printReport() {
   const previewDiv = document.getElementById("reportPreview");
   const win = window.open("", "_blank");
@@ -239,11 +275,11 @@ function printReport() {
           h2 { margin:0; }
           hr { margin:10px 0; border:1px solid #ccc; }
           ul { text-align:left; }
-          @media print { body { margin:0; } }
+          @media print { body { margin:0; } a { color: #000; text-decoration:none; } }
         </style>
       </head>
       <body>
-        ${previewDiv.innerHTML}
+        ${previewDiv.innerHTML.replace(/<h3>🎥 Dokumentasi Video<\/h3>[\s\S]*?<hr>/, "")}
         <script>window.onload=function(){window.print();}</script>
       </body>
     </html>
@@ -251,6 +287,9 @@ function printReport() {
   win.document.close();
 }
 
+// =========================================================
+// 🔔 Inisialisasi event listener
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
   populatePeriodeOptions();
   periodeSelect.addEventListener("change", populateChecklist);
