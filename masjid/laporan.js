@@ -55,34 +55,44 @@ function generateReport() {
   }
 
   const selected = checked.map(i => txs[i]);
-
-  // Urutkan berdasarkan tanggal
   const sortedSelected = [...selected].sort((a, b) => new Date(a.date) - new Date(b.date));
   const startDate = new Date(sortedSelected[0].date);
   const endDate = new Date(sortedSelected.at(-1).date);
 
-  // ✅ Saldo awal hanya dari transaksi sebelum periode terpilih
-  const saldoAwal = txs
+  // ✅ Saldo awal dari transaksi sebelum periode
+  let saldoAwal = txs
     .filter(t => new Date(t.date) < startDate)
     .reduce((s, t) =>
       s + (t.type === "income" ? t.amount : (t.type === "expense" ? -t.amount : 0)), 0);
 
-  // Kelompokkan transaksi
+  // ✅ Tambahkan transaksi "Saldo Awal" dalam periode
+  const saldoAwalDalamPeriode = sortedSelected.filter(
+    t => t.description.toLowerCase().includes("saldo awal")
+  );
+  const totalSaldoAwalTx = saldoAwalDalamPeriode.reduce((s, t) => s + t.amount, 0);
+  saldoAwal += totalSaldoAwalTx;
+
+  // Filter transaksi agar "Saldo Awal" tidak ikut ke pemasukan
+  const filteredSelected = sortedSelected.filter(
+    t => !t.description.toLowerCase().includes("saldo awal")
+  );
+
+  // Kelompokkan transaksi dengan urutan tanggal
   function groupByDescription(arr) {
     const map = {};
     arr.forEach(t => {
       if (!map[t.description]) {
-        map[t.description] = { total: 0, count: 0 };
+        map[t.description] = { total: 0, count: 0, list: [] };
       }
       map[t.description].total += t.amount;
       map[t.description].count += 1;
+      map[t.description].list.push(t);
     });
     return map;
   }
 
-  const pemasukan = selected.filter(t => t.type === "income");
-  const pengeluaran = selected.filter(t => t.type === "expense");
-
+  const pemasukan = filteredSelected.filter(t => t.type === "income");
+  const pengeluaran = filteredSelected.filter(t => t.type === "expense");
   const groupedIn = groupByDescription(pemasukan);
   const groupedOut = groupByDescription(pengeluaran);
 
@@ -95,24 +105,22 @@ function generateReport() {
 
   const lines = [];
   if (startMonthYear === endMonthYear) {
-    // Bulanan
     lines.push(`*📢 Laporan Bulanan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear}`);
   } else {
-    // Tahunan
     lines.push(`*📢 Laporan Tahunan Kas Masjid Al-Huda*`);
     lines.push(`📅 ${startMonthYear} - ${endMonthYear}`);
   }
 
   lines.push(`-------------------------`);
-  lines.push(`\n💰 *Saldo Awal:* *${saldoAwal.toLocaleString("id-ID")}*`);
+  lines.push(`💰 *Saldo Awal:* *${saldoAwal.toLocaleString("id-ID")}*`);
 
   lines.push(`\n🟢 *Pemasukan:*`);
   if (pemasukan.length === 0) {
     lines.push(`(Tidak ada)`);
   } else {
     for (const [desc, obj] of Object.entries(groupedIn)) {
-      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      const label = obj.count > 1 ? `(${obj.count}x) ${desc}` : desc;
       lines.push(`+ ${label}: ${obj.total.toLocaleString("id-ID")}`);
     }
   }
@@ -124,26 +132,45 @@ function generateReport() {
     lines.push(`(Tidak ada)`);
   } else {
     for (const [desc, obj] of Object.entries(groupedOut)) {
-      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      const label = obj.count > 1 ? `(${obj.count}x) ${desc}` : desc;
       lines.push(`- ${label}: ${obj.total.toLocaleString("id-ID")}`);
     }
   }
 
   lines.push(`\n*Total Pengeluaran:* ${totalOut.toLocaleString("id-ID")}`);
-  lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
+  lines.push(`💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
   lines.push(`-------------------------`);
 
-  lines.push(`\n📌Info: 👉tanjungbulan.my.id/masjid`);
-  lines.push(`\n> dibuat otomatis oleh sistem`);
+  // 🎥 Tambahkan konten video di bawah saldo akhir
+  const videoTxs = filteredSelected.filter(t => t.video);
+  if (videoTxs.length > 0) {
+    lines.push(`\n🎥 _Konten Video Dokumentasi_`);
+    lines.push(`-----------`);
+    videoTxs.forEach(t => {
+      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+      lines.push(`▶️ *${t.description}*`);
+      lines.push(`${t.video}`);
+      lines.push(`${humanDate}`);
+      lines.push(`-----------`);
+    });
+  }
+
+  lines.push(`📌 Info: 👉 tanjungbulan.my.id/masjid`);
+  lines.push(`> dibuat otomatis oleh sistem`);
+
   output.value = lines.join("\n");
 
-  // 🆕 Laporan elegan di bawah tombol salin
+  // 🆕 Laporan elegan untuk tampil di bawah tombol salin
   const previewDiv = document.getElementById("reportPreview");
 
   let html = `
   <div class="laporan-elegan">
     <h2>📊 ${startMonthYear === endMonthYear ? "Laporan Bulanan" : "Laporan Tahunan"} Kas Masjid Al-Huda</h2>
-    <p style="text-align:center;">Periode: ${startMonthYear === endMonthYear ? startMonthYear : `${startMonthYear} - ${endMonthYear}`}</p>
+    <p style="text-align:center;">📆 ${startMonthYear === endMonthYear ? startMonthYear : `${startMonthYear} - ${endMonthYear}`}</p>
     <hr>
     <p><b>Saldo Awal:</b> Rp ${saldoAwal.toLocaleString("id-ID")}</p>
     <h3 style="color:green;">🟢 Pemasukan</h3>
@@ -154,7 +181,7 @@ function generateReport() {
   } else {
     html += "<ul>";
     for (const [desc, obj] of Object.entries(groupedIn)) {
-      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      const label = obj.count > 1 ? `(${obj.count}x) ${desc}` : desc;
       html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
     }
     html += "</ul>";
@@ -170,7 +197,7 @@ function generateReport() {
   } else {
     html += "<ul>";
     for (const [desc, obj] of Object.entries(groupedOut)) {
-      const label = obj.count > 1 ? `${desc} (${obj.count}x)` : desc;
+      const label = obj.count > 1 ? `(${obj.count}x) ${desc}` : desc;
       html += `<li>${label}: <b>Rp ${obj.total.toLocaleString("id-ID")}</b></li>`;
     }
     html += "</ul>";
@@ -180,6 +207,22 @@ function generateReport() {
     <p><b>Total Pengeluaran:</b> Rp ${totalOut.toLocaleString("id-ID")}</p>
     <div class="saldo-akhir">💰 Saldo Akhir: Rp ${saldoAkhir.toLocaleString("id-ID")}</div>
     <hr>
+  `;
+
+  if (videoTxs.length > 0) {
+    html += `<h3>🎥 Dokumentasi Video</h3><ul>`;
+    videoTxs.forEach(t => {
+      const humanDate = new Date(t.date).toLocaleDateString("id-ID", {
+        day: "numeric", month: "long", year: "numeric"
+      });
+      html += `<li><b>${t.description}</b><br>
+      <a href="${t.video}" target="_blank">${t.video}</a><br>
+      <small>${humanDate}</small></li>`;
+    });
+    html += "</ul><hr>";
+  }
+
+  html += `
     <div class="tagline">
       📌 Info: <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a><br>
       <small>Dibuat otomatis oleh sistem</small>
@@ -211,10 +254,7 @@ function formatMonthYear(dateObj) {
 }
 
 function printReport() {
-  const laporan = document.getElementById("reportPreview").innerHTML;
-
-  // 🧾 Cetak hanya laporan keuangan (tanpa dokumentasi)
-  const laporanKeuanganOnly = laporan.replace(/<h3>🎥[\s\S]*?(<\/hr>|<\/div>)/gi, "");
+  const laporan = document.getElementById("reportOutput").value;
 
   const win = window.open("", "_blank");
   win.document.write(`
@@ -225,81 +265,31 @@ function printReport() {
           body {
             font-family: 'Poppins', sans-serif;
             background: #fff;
-            color: #333;
-            padding: 20px;
-          }
-          .header {
+            color: #000;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 10px;
           }
-          .header img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            margin-bottom: 6px;
+          .logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
           }
-          .header h1 {
-            font-size: 1.3rem;
-            margin: 0;
-            color: #2d3436;
-          }
-          .header p {
-            margin: 2px 0 8px;
-            color: #636e72;
-            font-size: 0.9rem;
-          }
-          h2 {
-            text-align: center;
-            color: #2d3436;
-            margin-top: 6px;
-          }
-          h3 {
-            color: #2d3436;
-            margin-top: 12px;
-            margin-bottom: 6px;
-          }
-          ul { list-style-type: "• "; padding-left: 20px; }
-          li { margin-bottom: 4px; }
-          hr { border: none; border-top: 1px solid #ccc; margin: 10px 0; }
-          .saldo-akhir {
-            background: linear-gradient(90deg, #00b894, #55efc4);
-            padding: 10px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-          }
-          .tagline {
-            text-align: center;
-            color: #777;
-            font-size: 0.8em;
-            margin-top: 10px;
-          }
-          a {
-            color: #0984e3;
-            text-decoration: none;
-          }
-          a:hover {
-            text-decoration: underline;
+          pre {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
           }
           @media print {
-            button { display: none; }
             body { margin: 0; }
           }
         </style>
       </head>
       <body>
-        <div class="header">
-          <img src="https://tanjungbulan.my.id/img/risma_1.png" alt="Logo RISMA Tanjung Bulan">
-          <h1>Masjid Al-Huda Tanjung Bulan</h1>
-          <p>Laporan Keuangan</p>
-        </div>
-        ${laporanKeuanganOnly}
-        <div class="tagline">
-          <p>Dicetak otomatis dari sistem <a href="https://tanjungbulan.my.id/masjid" target="_blank">tanjungbulan.my.id/masjid</a></p>
-          <p><small>© RISMA Tanjung Bulan</small></p>
-        </div>
+        <img class="logo" src="https://tanjungbulan.my.id/img/risma_1.png" alt="RISMA Logo">
+        <pre>${laporan}</pre>
         <script>window.onload = function(){ window.print(); }</script>
       </body>
     </html>
