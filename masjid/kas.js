@@ -7,11 +7,31 @@ window.kasData = {
     bendahara: "Pulung Riswanto",  
     transaksi: [  
 {
-date: "2025-11-02",
-description: "Nurman Wibowo",
+date: "2025-11-14",
+description: "Jual Kayu Reng",
 type: "income",
-amount: 70000,
-note: "buat beli obat semprot khusus lulangan",
+amount: 215000,
+note: "jual sisa kayu reng kepada bapak nurman wibowo.",
+foto: "",
+video: ""
+
+},
+{
+date: "2025-11-14",
+description: "Infak Jumat",
+type: "income",
+amount: 12000,
+note: "",
+foto: "",
+video: ""
+
+},
+{
+date: "2025-11-07",
+description: "Infak Jumat",
+type: "income",
+amount: 5000,
+note: "",
 foto: "",
 video: ""
 
