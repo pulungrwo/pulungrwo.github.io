@@ -40,7 +40,7 @@ video: ""
 date: "2025-11-02",
 description: "Obat Lulangan",
 type: "expense",
-amount: 70000,
+amount: 65000,
 note: "beli obat semprot khusus lulangan (pronate 200 SL)",
 foto: "",
 video: ""
