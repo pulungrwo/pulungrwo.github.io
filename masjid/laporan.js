@@ -152,6 +152,9 @@ function generateReport() {
   lines.push(`\n💰 *Saldo Akhir:* *${saldoAkhir.toLocaleString("id-ID")}*`);
   lines.push(`-------------------------`);
 
+// ================= Ambil transaksi yang punya video =================
+const videoTxs = filteredSelected.filter(t => t.video);
+
 // ================= Tambahkan link video ke laporan WA =================
 if (videoTxs.length > 0) {
   lines.push(`\n🎥 *Dokumentasi Video:*`);
@@ -164,10 +167,6 @@ if (videoTxs.length > 0) {
     lines.push(`  (${humanDate})`);
   });
 }
-
-// ================= Video dokumentasi hanya di preview =================
-  const videoTxs = filteredSelected.filter(t => t.video);
-
   
   lines.push(`📌 Info: 👉 tanjungbulan.my.id/masjid`);
   lines.push(`> dibuat otomatis oleh sistem`);
