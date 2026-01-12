@@ -165,6 +165,9 @@ if (videoTxs.length > 0) {
   });
 }
 
+// ================= Video dokumentasi hanya di preview =================
+  const videoTxs = filteredSelected.filter(t => t.video);
+
   
   lines.push(`📌 Info: 👉 tanjungbulan.my.id/masjid`);
   lines.push(`> dibuat otomatis oleh sistem`);
